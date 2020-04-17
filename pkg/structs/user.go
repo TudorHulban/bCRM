@@ -1,6 +1,6 @@
 package structs
 
-// UserPg is the representation of the user of the app in the Postgres persistance layer.
+// UserPg is the representation of the user of the app in the Postgres persistence layer.
 // Several methods are defined on this structure in order to satisfy RDBMSUser interface.
 // Sorted for maligned.
 type User struct {
@@ -13,6 +13,6 @@ type User struct {
 	LoginCODE     string `json:"code" pg:",notnull,unique"`
 	loginPWD      string `pg:",notnull"`
 
-	ContactIDs  []int64    // user should accomodate several contacts
+	ContactIDs  []int64    // user should accommodate several contacts
 	ContactInfo []*Contact `pg:"-"`
 }

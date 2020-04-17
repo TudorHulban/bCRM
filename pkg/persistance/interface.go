@@ -1,10 +1,10 @@
-package persistance
+package persistence
 
 import (
 	"github.com/TudorHulban/bCRM/pkg/structs"
 )
 
-// IAccount Interface provides decoupling of persistance solution for account related operations.
+// IAccount Interface provides decoupling of persistence solution for account related operations.
 type IAccount interface {
 	GetUserByUserCode(code string) (structs.User, error)
 }
