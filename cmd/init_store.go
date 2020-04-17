@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/TudorHulban/bCRM/pkg/persistance"
+	"github.com/TudorHulban/bCRM/pkg/persistence"
 )
 
-func initStore(s persistance.IAccount) {
+func initStore(s persistence.IAccount) {
 
 }

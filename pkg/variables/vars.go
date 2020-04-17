@@ -4,4 +4,4 @@ import (
 	"github.com/TudorHulban/bCRM/pkg/persistence"
 )
 
-var GStore persistance.IAccount
+var GStore persistence.IAccount
