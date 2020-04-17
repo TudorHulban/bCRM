@@ -7,10 +7,42 @@ import (
 	"time"
 
 	"github.com/TudorHulban/bCRM/pkg/constants"
+	"github.com/TudorHulban/bCRM/pkg/httphandlers"
+	"github.com/TudorHulban/bCRM/pkg/variables"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
 )
+
+func main() {
+	// init
+	initStore(variables.GStore)
+
+	e := echo.New()
+	e.HideBanner = true
+	e.Use(middleware.Logger())
+	e.Logger.SetLevel(log.DEBUG)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{"*"},
+	}))
+
+	// Routes
+	// public routes
+	e.POST("/login", httphandlers.LoginWithPassword)
+
+	// private routes
+	//r := e.Group("/r")
+
+	// Start server
+	go func() {
+		if err := e.Start(constants.ListeningSocket); err != nil {
+			e.Logger.Info("shutting down the server")
+		}
+	}()
+
+	handleInterrupt(e, constants.ShutdownGraceSeconds)
+}
 
 func handleInterrupt(s *echo.Echo, graceSeconds int) {
 	sigint := make(chan os.Signal, 1)
@@ -25,28 +57,4 @@ func handleInterrupt(s *echo.Echo, graceSeconds int) {
 	if errShutdown := s.Shutdown(ctx); errShutdown != nil {
 		log.Printf("Error HTTP server shutdown: %v", errShutdown)
 	}
-}
-
-func main() {
-	e := echo.New()
-	e.HideBanner = true
-	e.Use(middleware.Logger())
-	e.Logger.SetLevel(log.DEBUG)
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{"*"},
-	}))
-
-	// Routes
-	// private routes
-	r := e.Group("/r")
-
-	// Start server
-	go func() {
-		if err := e.Start(constants.ListeningSocket); err != nil {
-			e.Logger.Info("shutting down the server")
-		}
-	}()
-
-	handleInterrupt(e, constants.ShutdownGraceSeconds)
 }
