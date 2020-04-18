@@ -29,8 +29,8 @@ func main() {
 
 	// Routes
 	// public routes
-	e.POST("/login", httphandlers.LoginWithPassword)
-	e.POST("/createuser", httphandlers.NewUser)
+	e.POST(constants.EndpointLogin, httphandlers.LoginWithPassword)
+	e.POST(constants.EndpointNewUser, httphandlers.NewUser)
 
 	// private routes
 	//r := e.Group("/r")
