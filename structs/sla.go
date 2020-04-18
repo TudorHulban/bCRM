@@ -14,7 +14,7 @@ type SLAPriority struct {
 	Description string
 }
 
-// SLAValues provides values for each priority of a SLA.
+// SLAValue provides values for each priority of a SLA.
 type SLAValue struct {
 	ID               int
 	SLAID            int

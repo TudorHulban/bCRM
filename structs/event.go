@@ -1,5 +1,6 @@
 package structs
 
+// Event Structure defining the CRM event.
 type Event struct {
 	BroadcastTeam  bool
 	OpenedByTeamID int `pg:"teamid"`

@@ -3,8 +3,8 @@ package httphandlers
 import (
 	"net/http"
 
-	"github.com/TudorHulban/bCRM/pkg/constants"
-	"github.com/TudorHulban/bCRM/pkg/variables"
+	"github.com/TudorHulban/bCRM/constants"
+	"github.com/TudorHulban/bCRM/variables"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 )

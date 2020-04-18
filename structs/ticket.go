@@ -24,6 +24,8 @@ type Ticket struct {
 	Events          []Event `pg:"-"`
 }
 
+// TicketStatus Structure represents the definition of the ticket status.
+// To support different flows an option of next tickets statuses is added.
 type TicketStatus struct {
 	ID                     int
 	TicketTypeID           int
@@ -32,14 +34,15 @@ type TicketStatus struct {
 	NOTAllowedNextStatusID []int64 `pg:"notnextstatusid"`
 }
 
+// TicketMovement Structure holding audit information for each movement of tickets.
 type TicketMovement struct {
-	ID                      int64
-	TicketID                int64
-	Timestamp               int64
-	PreviousStatus          int // ticket status ID
-	ChangedToStatus         int // ticket status ID
+	ID                      int64 // little bit of memory padding
+	PreviousStatus          int   // ticket status ID
+	ChangedToStatus         int   // ticket status ID
 	PreviousPriority        int
 	ChangedToPriority       int
+	TicketID                int64
+	Timestamp               int64
 	PreviousAssignedUserID  int64
 	ChangedToAssignedUserID int64
 }

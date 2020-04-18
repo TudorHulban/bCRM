@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TudorHulban/bCRM/pkg/constants"
+	"github.com/TudorHulban/bCRM/constants"
 	"github.com/TudorHulban/bCRM/pkg/httphandlers"
-	"github.com/TudorHulban/bCRM/pkg/variables"
+	"github.com/TudorHulban/bCRM/variables"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
@@ -30,6 +30,7 @@ func main() {
 	// Routes
 	// public routes
 	e.POST("/login", httphandlers.LoginWithPassword)
+	e.POST("/createuser", httphandlers.NewUser)
 
 	// private routes
 	//r := e.Group("/r")
@@ -57,4 +58,5 @@ func handleInterrupt(s *echo.Echo, graceSeconds int) {
 	if errShutdown := s.Shutdown(ctx); errShutdown != nil {
 		log.Printf("Error HTTP server shutdown: %v", errShutdown)
 	}
+	time.Sleep(time.Duration(graceSeconds))
 }
