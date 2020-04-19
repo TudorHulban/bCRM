@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/TudorHulban/bCRM/constants"
-	"github.com/TudorHulban/bCRM/variables"
+	"github.com/TudorHulban/bCRM/pkg/store"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 )
@@ -19,7 +19,7 @@ func LoginWithPassword(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, e)
 	}
 	// error is user info not found, we are not hiding this with 404
-	u, errGetUser := variables.GStoreAccount.GetUserByUserCode(userCode)
+	u, errGetUser := store.TheGeneralStore().GetUserByUserCode(userCode)
 	if errGetUser != nil {
 		e.TheError = errGetUser.Error()
 		return c.JSON(http.StatusForbidden, e)

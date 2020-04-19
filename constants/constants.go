@@ -1,6 +1,10 @@
 package constants
 
 // Database Initialization
+const DBSocket = "0.0.0.0:5432"
+const DBUser = "postgres"
+const DBPass = "pp"
+const DBName = "postgres"
 
 // Web Server Default Config
 const ListeningSocket = "0.0.0.0:8001"

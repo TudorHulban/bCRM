@@ -7,16 +7,20 @@ import (
 	"time"
 
 	"github.com/TudorHulban/bCRM/constants"
+	"github.com/TudorHulban/bCRM/interfaces"
 	"github.com/TudorHulban/bCRM/pkg/httphandlers"
-	"github.com/TudorHulban/bCRM/variables"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
 )
 
 func main() {
-	// init
-	initStore(variables.GStore)
+	dbconnInfo := interfaces.DBConnInfo{
+		Socket: constants.DBSocket,
+		User:   constants.DBUser,
+		Pass:   constants.DBPass,
+		DB:     constants.DBName,
+	}
 
 	e := echo.New()
 	e.HideBanner = true

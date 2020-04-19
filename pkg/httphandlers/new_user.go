@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/TudorHulban/bCRM/constants"
+	"github.com/TudorHulban/bCRM/pkg/store"
 	"github.com/TudorHulban/bCRM/structs"
-	"github.com/TudorHulban/bCRM/variables"
 	"github.com/labstack/echo"
 )
 
@@ -38,7 +38,7 @@ func NewUser(c echo.Context) error {
 	u.ContactInfo = append(u.ContactInfo, &co)
 	u.SecurityGroup = constants.SecuGrpUser
 
-	errAdd := variables.GStoreAccount.CreateUser(u)
+	errAdd := store.TheGeneralStore().CreateUser(u)
 	if errAdd != nil {
 		e.TheError = errAdd.Error()
 		return c.JSON(http.StatusInternalServerError, e)
