@@ -38,10 +38,10 @@ func NewUser(c echo.Context) error {
 	u.ContactInfo = append(u.ContactInfo, &co)
 	u.SecurityGroup = constants.SecuGrpUser
 
-	errAdd := variables.GStore.New(u)
+	errAdd := variables.GStoreAccount.New(u)
 	if errAdd != nil {
 		e.TheError = errAdd.Error()
 		return c.JSON(http.StatusInternalServerError, e)
 	}
-	return c.JSON(http.StatusOK, u) // TODO: maybe we should send less info for user.
+	return c.JSON(http.StatusOK, u.ID)
 }

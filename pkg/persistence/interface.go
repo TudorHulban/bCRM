@@ -6,6 +6,6 @@ import (
 
 // IAccount Interface provides decoupling of persistence solution for account related operations.
 type IAccount interface {
-	New(structs.User) error
+	CreateUser(structs.User) error
 	GetUserByUserCode(string) (structs.User, error)
 }

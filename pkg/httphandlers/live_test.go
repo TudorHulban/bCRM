@@ -9,12 +9,14 @@ import (
 	"github.com/TudorHulban/bCRM/constants"
 	"github.com/TudorHulban/bCRM/pkg/httphandlers"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test1OK(t *testing.T) {
 	e := echo.New()
-	e.GET(constants.EndpointNewUser, httphandlers.HandlerOK)
+	e.Logger.SetLevel(log.DEBUG)
+	e.GET(constants.EndpointNewUser, httphandlers.Live)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, constants.EndpointNewUser, nil)

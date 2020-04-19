@@ -29,7 +29,7 @@ func main() {
 
 	// Routes
 	// public routes
-	e.GET(constants.EndpointOK, httphandlers.HandlerOK)
+	e.GET(constants.EndpointLive, httphandlers.HandlerOK)
 	e.POST(constants.EndpointLogin, httphandlers.LoginWithPassword)
 	e.POST(constants.EndpointNewUser, httphandlers.NewUser)
 

@@ -4,10 +4,9 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/gommon/log"
 )
 
-func HandlerOK(c echo.Context) error {
-	log.Info("OK")
+func Live(c echo.Context) error {
+	c.Logger().Debug("Live")
 	return c.JSON(http.StatusOK, echo.Map{"ok": "OK"})
 }

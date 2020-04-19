@@ -19,7 +19,7 @@ func LoginWithPassword(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, e)
 	}
 	// error is user info not found, we are not hiding this with 404
-	u, errGetUser := variables.GStore.GetUserByUserCode(userCode)
+	u, errGetUser := variables.GStoreAccount.GetUserByUserCode(userCode)
 	if errGetUser != nil {
 		e.TheError = errGetUser.Error()
 		return c.JSON(http.StatusForbidden, e)
