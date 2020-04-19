@@ -6,6 +6,7 @@ import (
 
 var gstore interfaces.IStore
 
+// TheGeneralStore ....
 func TheGeneralStore() interfaces.IStore {
 	if gstore != nil {
 		return gstore

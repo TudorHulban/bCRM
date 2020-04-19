@@ -8,6 +8,7 @@ import (
 
 	"github.com/TudorHulban/bCRM/constants"
 	"github.com/TudorHulban/bCRM/interfaces"
+	"github.com/TudorHulban/bCRM/pgstore"
 	"github.com/TudorHulban/bCRM/pkg/httphandlers"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -21,6 +22,13 @@ func main() {
 		Pass:   constants.DBPass,
 		DB:     constants.DBName,
 	}
+	var store pgstore.PgStore
+	db, err := store.Open(dbconnInfo)
+	if err != nil {
+		log.Print("Could not connect to DB. Exiting ...")
+		os.Exit(1)
+	}
+	// set schema
 
 	e := echo.New()
 	e.HideBanner = true

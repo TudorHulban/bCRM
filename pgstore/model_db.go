@@ -5,7 +5,6 @@ import (
 	"github.com/go-pg/pg"
 )
 
-// PgStore Satisfies IStore interface.
 type PgStore struct{}
 
 func (s *PgStore) Open(info interfaces.DBConnInfo) (interfaces.Database, error) {
