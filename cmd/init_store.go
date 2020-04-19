@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/TudorHulban/bCRM/pkg/persistence"
+	"github.com/TudorHulban/bCRM/interfaces"
 )
 
-func initStore(s persistence.IAccount) {
+// initStore Initializes store. Connect to db and returns any error.
+func initStore(s *interfaces.IStore) error {
 
 }

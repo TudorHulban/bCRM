@@ -1,7 +1,8 @@
 package variables
 
 import (
-	"github.com/TudorHulban/bCRM/pkg/persistence"
+	"github.com/TudorHulban/bCRM/interfaces"
 )
 
-var GStoreAccount persistence.IAccount
+var GStore interfaces.IStore
+var GStoreAccount interfaces.IAccount

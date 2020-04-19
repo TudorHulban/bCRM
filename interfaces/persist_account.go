@@ -1,4 +1,4 @@
-package persistence
+package interfaces
 
 import (
 	"github.com/TudorHulban/bCRM/structs"
