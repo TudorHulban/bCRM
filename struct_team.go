@@ -1,4 +1,4 @@
-package structs
+package main
 
 // Team Structure holding team fields. Every application user belongs to a team.
 type Team struct {

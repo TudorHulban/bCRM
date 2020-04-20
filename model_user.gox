@@ -1,11 +1,7 @@
-package pgstore
+package main
 
 import (
 	"database/sql"
-
-	"github.com/TudorHulban/bCRM/constants"
-	"github.com/TudorHulban/bCRM/pkg/helpers"
-	"github.com/TudorHulban/bCRM/structs"
 )
 
 // Needs cache for users. Not to go to db for user ID.
@@ -14,11 +10,11 @@ var userRights map[int]string
 
 // Userpg type would satisfy IAccount interface.
 // Added new type for local decoupling.
-type Userpg structs.User
+type Userpg User
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
 func (u *Userpg) CreateUser(userData *Userpg, db *sql.DB) error {
-	salt := helpers.GenerateRandomString(constants.SaltLength)
+	salt := helpers.GenerateRandomString(SaltLength)
 
 	hash, errHash := helpers.HashPassword(userData.LoginPWD, salt)
 	if errHash != nil {

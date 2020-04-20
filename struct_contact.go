@@ -1,4 +1,4 @@
-package structs
+package main
 
 // Contact Is used when defining a app user. The app user could have more than one contact.
 type Contact struct {

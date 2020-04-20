@@ -1,4 +1,4 @@
-package structs
+package main
 
 // User is the representation of the user of the app in the Postgres persistence layer.
 // Several methods are defined on this structure in order to satisfy RDBMSUser interface.

@@ -1,14 +1,10 @@
-package pgstore
+package main
 
 import (
 	"bufio"
 	"errors"
 	"io/ioutil"
 	"os"
-
-	db "../database" // provides RDBMS connection
-
-	s "../structs"
 )
 
 // File defines File type for Pg persistance.

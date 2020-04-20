@@ -1,8 +1,4 @@
-package pgstore
-
-import (
-	s "../structs"
-)
+package main
 
 // File defines SLA value type for Pg persistance.
 

@@ -1,9 +1,4 @@
-package pgstore
-
-import (
-	db "../database"
-	s "../structs"
-)
+package main
 
 // File defines Security type for Pg persistance.
 

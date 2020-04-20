@@ -1,13 +1,11 @@
-package pgstore
+package main
 
 import (
 	"time"
-
-	s "../structs"
 )
 
 // Ticketpg type would satisfy RDBMSTicket interface.
-type Ticketpg s.Ticket
+type Ticketpg Ticket
 
 func (*Ticketpg) Add(pTicket *s.Ticket) error {
 	pTicket.Opened = time.Now().UnixNano()

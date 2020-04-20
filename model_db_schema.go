@@ -1,4 +1,4 @@
-package pgstore
+package main
 
 import (
 	"github.com/go-pg/pg"
@@ -13,7 +13,8 @@ func NewSchema(db *pg.DB, models ...interface{}) error {
 
 	for _, model := range models {
 		if errCreateTable := createTable4Model(model); errCreateTable != nil {
-			return nil, errCreateTable
+			return errCreateTable
 		}
 	}
+	return nil
 }

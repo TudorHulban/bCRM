@@ -14,5 +14,3 @@ require (
 	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904
 	mellium.im/sasl v0.2.1 // indirect
 )
-
-replace github.com/TudorHulban/bCRM/interfaces => /mnt/tmpfs.ramdisk/bCRM/interfaces

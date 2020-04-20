@@ -1,4 +1,4 @@
-package httphandlers
+package main
 
 import (
 	"net/http"
@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Live HTTP Endpoint for verifying app is operational.
 func Live(c echo.Context) error {
 	c.Logger().Debug("Live")
 	return c.JSON(http.StatusOK, echo.Map{"ok": "OK"})

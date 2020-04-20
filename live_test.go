@@ -1,4 +1,4 @@
-package httphandlers_test
+package main
 
 import (
 	_ "errors"
@@ -6,8 +6,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/TudorHulban/bCRM/constants"
-	"github.com/TudorHulban/bCRM/pkg/httphandlers"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"

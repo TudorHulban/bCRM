@@ -1,13 +1,9 @@
-package pgstore
-
-import (
-	s "../structs"
-)
+package main
 
 // File defines Team type for Pg persistance.
 
 // SLAPrioritypg type would satisfy RDBMSSLAPriority interface.
-type Teampg s.Team
+type Teampg Team
 
 func (*Teampg) Add(pTeam *Teampg) error {
 	return b.DBConn.Insert(pTeam)

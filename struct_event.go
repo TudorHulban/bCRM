@@ -1,4 +1,4 @@
-package structs
+package main
 
 // Event Structure defining the CRM event.
 type Event struct {

@@ -1,17 +1,13 @@
-package pgstore
+package main
 
 import (
 	"time"
-
-	db "../database" // provides RDBMS connection
-	f "../interfaces"
-	s "../structs"
 )
 
 // File defines Event type for Pg persistance.
 
 // Eventpg type would satisfy RDBMSEvent interface.
-type Eventpg s.Event
+type Eventpg Event
 
 // AddEvent adds event to Pg. the ID of inserted row is populated after insert in the ID column.
 func (*Eventpg) Add(pEvent *Eventpg, pUser f.RDBMSUser) error {

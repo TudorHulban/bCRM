@@ -1,4 +1,4 @@
-package structs
+package main
 
 // SLA type abstracts service level agreement information. Ex. Gold, Silver, Bronze.
 type SLA struct {

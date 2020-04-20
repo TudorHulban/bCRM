@@ -1,4 +1,4 @@
-package structs
+package main
 
 // TicketType abstracts a ticket type. Ticket contains events.
 type TicketType struct {

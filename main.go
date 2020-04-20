@@ -6,28 +6,26 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TudorHulban/bCRM/constants"
-	"github.com/TudorHulban/bCRM/interfaces"
-	"github.com/TudorHulban/bCRM/pgstore"
-	"github.com/TudorHulban/bCRM/pkg/httphandlers"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
 )
 
 func main() {
-	dbconnInfo := interfaces.DBConnInfo{
-		Socket: constants.DBSocket,
-		User:   constants.DBUser,
-		Pass:   constants.DBPass,
-		DB:     constants.DBName,
+	dbconnInfo := DBConnInfo{
+		Socket: DBSocket,
+		User:   DBUser,
+		Pass:   DBPass,
+		DB:     DBName,
 	}
-	var store pgstore.PgStore
+	var store PgStore
 	db, err := store.Open(dbconnInfo)
 	if err != nil {
 		log.Print("Could not connect to DB. Exiting ...")
 		os.Exit(1)
 	}
+	defer db.Close()
+
 	// set schema
 
 	e := echo.New()
@@ -41,21 +39,21 @@ func main() {
 
 	// Routes
 	// public routes
-	e.GET(constants.EndpointLive, httphandlers.Live)
-	e.POST(constants.EndpointLogin, httphandlers.LoginWithPassword)
-	e.POST(constants.EndpointNewUser, httphandlers.NewUser)
+	e.GET(EndpointLive, Live)
+	//e.POST(EndpointLogin, LoginWithPassword)
+	//e.POST(EndpointNewUser, NewUser)
 
 	// private routes
 	//r := e.Group("/r")
 
 	// Start server
 	go func() {
-		if err := e.Start(constants.ListeningSocket); err != nil {
+		if err := e.Start(ListeningSocket); err != nil {
 			e.Logger.Info("shutting down the server")
 		}
 	}()
 
-	handleInterrupt(e, constants.ShutdownGraceSeconds)
+	handleInterrupt(e, ShutdownGraceSeconds)
 }
 
 func handleInterrupt(s *echo.Echo, graceSeconds int) {

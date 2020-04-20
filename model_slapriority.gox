@@ -1,8 +1,4 @@
-package pgstore
-
-import (
-	s "../structs"
-)
+package main
 
 // File defines SLA priority type for Pg persistance.
 
