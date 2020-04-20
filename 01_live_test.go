@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -11,13 +10,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test1OK(t *testing.T) {
+func Test1Live(t *testing.T) {
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
-	e.GET(constants.EndpointNewUser, httphandlers.Live)
+	e.GET(EndpointLive, Live)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, constants.EndpointNewUser, nil)
+	req, _ := http.NewRequest(http.MethodGet, EndpointLive, nil)
 
 	e.ServeHTTP(w, req)
 	resp := w.Result()

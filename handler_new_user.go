@@ -35,7 +35,7 @@ func NewUser(c echo.Context) error {
 	u.ContactInfo = append(u.ContactInfo, &co)
 	u.SecurityGroup = SecuGrpUser
 
-	errAdd := TheGeneralStore().CreateUser(u)
+	errAdd := store.CreateUser(&u)
 	if errAdd != nil {
 		e.TheError = errAdd.Error()
 		return c.JSON(http.StatusInternalServerError, e)

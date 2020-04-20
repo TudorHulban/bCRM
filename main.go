@@ -11,6 +11,8 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+var store PgStore
+
 func main() {
 	dbconnInfo := DBConnInfo{
 		Socket: DBSocket,
@@ -18,15 +20,19 @@ func main() {
 		Pass:   DBPass,
 		DB:     DBName,
 	}
-	var store PgStore
 	db, err := store.Open(dbconnInfo)
 	if err != nil {
-		log.Print("Could not connect to DB. Exiting ...")
+		log.Print("Could not connect to DB. Exiting ...", err)
 		os.Exit(1)
 	}
 	defer db.Close()
 
-	// set schema
+	// Create DB schema
+	errSchema := NewSchema(db, interface{}(&User{}), interface{}(&Contact{}))
+	if errSchema != nil {
+		log.Print("Could not create DB schema. Exiting ...", errSchema)
+		os.Exit(1)
+	}
 
 	e := echo.New()
 	e.HideBanner = true
@@ -38,10 +44,10 @@ func main() {
 	}))
 
 	// Routes
-	// public routes
+	// Public routes
 	e.GET(EndpointLive, Live)
 	//e.POST(EndpointLogin, LoginWithPassword)
-	//e.POST(EndpointNewUser, NewUser)
+	e.POST(EndpointNewUser, NewUser)
 
 	// private routes
 	//r := e.Group("/r")

@@ -1,22 +1,14 @@
 package main
 
-import (
-	"database/sql"
-)
-
 // Needs cache for users. Not to go to db for user ID.
 
 var userRights map[int]string
 
-// Userpg type would satisfy IAccount interface.
-// Added new type for local decoupling.
-type Userpg User
-
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
-func (u *Userpg) CreateUser(userData *Userpg, db *sql.DB) error {
-	salt := helpers.GenerateRandomString(SaltLength)
+func (s *PgStore) CreateUser(userData *User) error {
+	salt := GenerateRandomString(SaltLength)
 
-	hash, errHash := helpers.HashPassword(userData.LoginPWD, salt)
+	hash, errHash := HashPassword(userData.LoginPWD, salt)
 	if errHash != nil {
 		return errHash
 	}
@@ -24,26 +16,31 @@ func (u *Userpg) CreateUser(userData *Userpg, db *sql.DB) error {
 	userData.PasswordHASH = hash
 
 	for _, v := range userData.ContactInfo {
-		errInsertContact := b.DBConn.Insert(v)
+		errInsertContact := s.TheDB.Insert(v)
 		if errInsertContact != nil {
 			return errInsertContact
 		}
-		pUser.ContactIDs = append(pUser.ContactIDs, v.ID)
+		userData.ContactIDs = append(userData.ContactIDs, v.ID)
 	}
-	errInsertUser := b.DBConn.Insert(pUser)
+
+	errInsertUser := s.TheDB.Insert(userData)
 	if errInsertUser != nil {
 		return errInsertUser
 	}
 
-	for _, v := range pUser.ContactInfo {
-		v.UserID = pUser.ID
-		errUpdateContact := b.DBConn.Update(v)
+	// based on the ID of the row inserted
+	for _, v := range userData.ContactInfo {
+		v.UserID = userData.ID
+
+		errUpdateContact := s.TheDB.Update(v)
 		if errUpdateContact != nil {
 			return errUpdateContact
 		}
 	}
 	return nil
 }
+
+/*
 
 // GetUserByPK fetches user info from Pg and returns a user type.
 func (u *Userpg) GetUserByPK(pID int64) (Userpg, error) {
@@ -150,3 +147,4 @@ func getContactInfo(b *Blog, pUser *Userpg) error {
 	}
 	return nil
 }
+*/
