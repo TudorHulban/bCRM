@@ -7,11 +7,15 @@ import (
 )
 
 // NewUser Creates a new user. To be used by user management roles.
+// Information needed for creating a user is:
+// Name, UserCode, Password
 func NewUser(c echo.Context) error {
 	var e httpError
 
 	if len(c.FormValue(NewUserFormName)) == 0 {
-		e.TheError = NewUserFormName + " information is not valid"
+		msg := NewUserFormName + " information is not valid"
+		c.Logger().Debugf("%v", msg)
+		e.TheError = msg
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
 

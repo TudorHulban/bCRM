@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/labstack/echo"
@@ -10,16 +11,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var formData = `{"name":"John Smith", "code":"xxxx", "pass":"1234"}`
+
 func Test2NewUser(t *testing.T) {
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
-	e.GET(EndpointNewUser, NewUser)
+
+	req := httptest.NewRequest(http.MethodPost, EndpointNewUser, strings.NewReader(formData))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, EndpointNewUser, nil)
+	echoCtx := e.NewContext(req, w)
 
-	e.ServeHTTP(w, req)
-	resp := w.Result()
-
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.NoError(t, NewUser(echoCtx))
 }

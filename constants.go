@@ -27,7 +27,7 @@ const LoginFormPass = "pass"
 const NewUserFormName = "name"
 const NewUserFormUserCode = "code"
 const NewUserFormPass = "pass"
-const NewUserFormEmail = "pass"
+const NewUserFormEmail = "email"
 
 // New User Creation
 const SaltLength = 8
