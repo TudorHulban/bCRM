@@ -11,6 +11,7 @@ import (
 // Name, UserCode, Password
 func NewUser(c echo.Context) error {
 	var e httpError
+	c.Logger().Debug("New User")
 
 	if len(c.FormValue(NewUserFormName)) == 0 {
 		msg := NewUserFormName + " information is not valid"
@@ -33,16 +34,22 @@ func NewUser(c echo.Context) error {
 	co.FirstName = c.FormValue(NewUserFormName)
 	co.CompanyEmail = c.FormValue(NewUserFormEmail)
 
+	c.Logger().Debug("Contact:", co)
+
 	var u User
 	u.LoginCODE = c.FormValue(NewUserFormUserCode)
 	u.LoginPWD = c.FormValue(NewUserFormPass)
 	u.ContactInfo = append(u.ContactInfo, &co)
 	u.SecurityGroup = SecuGrpUser
 
+	c.Logger().Debug("User:", u)
+
 	errAdd := store.CreateUser(&u)
 	if errAdd != nil {
+		c.Logger().Debug("errAdd:", errAdd)
 		e.TheError = errAdd.Error()
-		return c.JSON(http.StatusInternalServerError, e)
+		c.JSON(http.StatusInternalServerError, e)
+		return errAdd
 	}
 	return c.JSON(http.StatusOK, u.ID)
 }

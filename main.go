@@ -28,7 +28,7 @@ func main() {
 	defer db.Close()
 
 	// Create DB schema
-	errSchema := NewSchema(db, interface{}(&User{}), interface{}(&Contact{}))
+	errSchema := NewSchema(db, interface{}(&SLAPriority{}), interface{}(&SLA{}), interface{}(&SLAValue{}), interface{}(&TicketType{}), interface{}(&TicketStatus{}), interface{}(&Resource{}), interface{}(&ResourceMove{}), interface{}(&Event{}), interface{}(&TicketMovement{}), interface{}(&Ticket{}), interface{}(&Team{}), interface{}(&User{}), interface{}(&File{}), interface{}(&Contact{}))
 	if errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)

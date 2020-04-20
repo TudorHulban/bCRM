@@ -1,6 +1,7 @@
 package main
 
 import (
+	valid "github.com/asaskevich/govalidator"
 	"github.com/labstack/gommon/log"
 )
 
@@ -10,7 +11,7 @@ var userRights map[int]string
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
 func (s *PgStore) CreateUser(userData *User) error {
-	log.Debug("user data to insert: ", userData)
+	log.Print("user data to insert: ", userData)
 
 	salt := GenerateRandomString(SaltLength)
 
@@ -20,6 +21,13 @@ func (s *PgStore) CreateUser(userData *User) error {
 	}
 	userData.PasswordSALT = salt
 	userData.PasswordHASH = hash
+
+	isValid, errValid := valid.ValidateStruct(userData)
+	if errValid != nil {
+		log.Print("validation error:", errValid, isValid)
+		return errValid
+	}
+	log.Print("structure valid: ", isValid)
 
 	for _, v := range userData.ContactInfo {
 		errInsertContact := s.TheDB.Insert(v)
