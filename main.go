@@ -6,12 +6,13 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
 )
 
-var store PgStore
+var dbConn *pg.DB
 
 func main() {
 	dbconnInfo := DBConnInfo{
@@ -20,15 +21,23 @@ func main() {
 		Pass:   DBPass,
 		DB:     DBName,
 	}
-	db, err := store.Open(dbconnInfo)
-	if err != nil {
-		log.Print("Could not connect to DB. Exiting ...", err)
+	dbConn := pg.Connect(&pg.Options{
+		Addr:     dbconnInfo.Socket,
+		User:     dbconnInfo.User,
+		Password: dbconnInfo.Pass,
+		Database: dbconnInfo.DB,
+	})
+	defer dbConn.Close()
+
+	// check db conn
+	errConn := CheckPgDB(dbConn)
+	if errConn != nil {
+		log.Print("Could not create DB schema. Exiting ...", errConn)
 		os.Exit(1)
 	}
-	defer db.Close()
 
 	// Create DB schema
-	errSchema := NewSchema(db, interface{}(&SLAPriority{}), interface{}(&SLA{}), interface{}(&SLAValue{}), interface{}(&TicketType{}), interface{}(&TicketStatus{}), interface{}(&Resource{}), interface{}(&ResourceMove{}), interface{}(&Event{}), interface{}(&TicketMovement{}), interface{}(&Ticket{}), interface{}(&Team{}), interface{}(&User{}), interface{}(&File{}), interface{}(&Contact{}))
+	errSchema := NewSchema(dbConn, interface{}(&SLAPriority{}), interface{}(&SLA{}), interface{}(&SLAValue{}), interface{}(&TicketType{}), interface{}(&TicketStatus{}), interface{}(&Resource{}), interface{}(&ResourceMove{}), interface{}(&Event{}), interface{}(&TicketMovement{}), interface{}(&Ticket{}), interface{}(&Team{}), interface{}(&User{}), interface{}(&File{}), interface{}(&Contact{}))
 	if errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)

@@ -10,7 +10,7 @@ import (
 var userRights map[int]string
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
-func (s *PgStore) CreateUser(userData *User) error {
+func CreateUser(userData *User) error {
 	log.Print("user data to insert: ", userData)
 
 	salt := GenerateRandomString(SaltLength)
@@ -30,14 +30,15 @@ func (s *PgStore) CreateUser(userData *User) error {
 	log.Print("structure valid: ", isValid)
 
 	for _, v := range userData.ContactInfo {
-		errInsertContact := s.TheDB.Insert(v)
+
+		errInsertContact := dbConn.Insert(v)
 		if errInsertContact != nil {
 			return errInsertContact
 		}
 		userData.ContactIDs = append(userData.ContactIDs, v.ID)
 	}
 
-	errInsertUser := s.TheDB.Insert(userData)
+	errInsertUser := dbConn.Insert(userData)
 	if errInsertUser != nil {
 		return errInsertUser
 	}
@@ -46,7 +47,7 @@ func (s *PgStore) CreateUser(userData *User) error {
 	for _, v := range userData.ContactInfo {
 		v.UserID = userData.ID
 
-		errUpdateContact := s.TheDB.Update(v)
+		errUpdateContact := dbConn.Update(v)
 		if errUpdateContact != nil {
 			return errUpdateContact
 		}

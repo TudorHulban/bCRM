@@ -1,9 +1,5 @@
 package store
 
-import (
-	"github.com/TudorHulban/bCRM/interfaces"
-)
-
 var gstore interfaces.IStore
 
 // TheGeneralStore ....

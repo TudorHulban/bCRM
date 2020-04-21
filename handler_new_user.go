@@ -44,7 +44,7 @@ func NewUser(c echo.Context) error {
 
 	c.Logger().Debug("User:", u)
 
-	errAdd := store.CreateUser(&u)
+	errAdd := CreateUser(&u)
 	if errAdd != nil {
 		c.Logger().Debug("errAdd:", errAdd)
 		e.TheError = errAdd.Error()
