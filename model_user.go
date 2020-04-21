@@ -30,7 +30,6 @@ func CreateUser(userData *User) error {
 	log.Print("structure valid: ", isValid)
 
 	for _, v := range userData.ContactInfo {
-
 		errInsertContact := dbConn.Insert(v)
 		if errInsertContact != nil {
 			return errInsertContact
