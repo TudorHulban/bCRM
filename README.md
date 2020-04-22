@@ -1,5 +1,6 @@
 # bCRM
-backend CRM
+backend CRM.
+under heavy refactoring. wip
 
 ### golangci-lint install:
 a. Download
