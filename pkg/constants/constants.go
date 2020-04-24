@@ -1,4 +1,4 @@
-package main
+package constants
 
 // Database Initialization
 const DBSocket = "0.0.0.0:5432"
