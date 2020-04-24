@@ -73,15 +73,15 @@ func (u *User) Insert() error {
 		u.log.Debugf("validation error:", errValid)
 		return errValid
 	}
-	u.log.Print("structure is valid: ")
+	u.log.Debugf("structure is valid.")
 
 	salt := GenerateRandomString(constants.SaltLength)
+	u.PasswordSALT = salt
 
-	hash, errHash := HashPassword(u.UserFormData.LoginPWD, salt)
+	hash, errHash := HashPassword(u.UserFormData.LoginPWD, u.PasswordSALT)
 	if errHash != nil {
 		return errHash
 	}
-	u.PasswordSALT = salt
 	u.PasswordHASH = hash
 
 	/*
