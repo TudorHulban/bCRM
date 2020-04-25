@@ -3,32 +3,28 @@ package models
 import (
 	"testing"
 
+	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
+	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestUserAdd(t *testing.T) {
-	dbconnInfo := DBConnInfo{
-		Socket: DBSocket,
-		User:   DBUser,
-		Pass:   DBPass,
-		DB:     DBName,
-	}
 	dbConn := pg.Connect(&pg.Options{
-		Addr:     dbconnInfo.Socket,
-		User:     dbconnInfo.User,
-		Password: dbconnInfo.Pass,
-		Database: dbconnInfo.DB,
+		Addr:     commons.DBSocket,
+		User:     commons.DBUser,
+		Password: commons.DBPass,
+		Database: commons.DBName,
 	})
 	defer dbConn.Close()
 
-	if assert.NoError(t, CheckPgDB(dbConn), "no connection to DB") {
-		u := User{ID: 1, LoginCODE: "xxx", SecurityGroup: 1}
-		errAdd := CreateUser(&u)
+	e := echo.New()
+	ectx := e.NewContext(nil, nil)
 
-		if errAdd != nil {
-			t.Error("TestUserAdd:", errAdd)
-		}
-	}
+	f := UserFormData{TeamID: 1, LoginCODE: "xxx", SecurityGroup: 1, LoginPWD: "abcd"}
+	user := NewUser(ectx, dbConn, f)
+
+	err := user.Insert()
+	assert.NoError(t, err)
 
 }

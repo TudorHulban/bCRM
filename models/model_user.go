@@ -30,7 +30,7 @@ type UserFormData struct {
 	TeamID        int    `pg:",notnull" valid:"type(int)"` // security groups 2, 3 can only see teams tickets
 	SecurityGroup int    `pg:",notnull" valid:"type(int)"` // as per userRights, userRights = map[int]string{1: "admin", 2: "user", 3: "external user"}
 	LoginCODE     string `valid:"type(string)" json:"code" pg:",notnull,unique" `
-	LoginPWD      string `valid:"type(string)" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM
+	LoginPWD      string `valid:"type(string)" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM, to be taken out as hash is enough
 }
 
 // User is the representation of the user of the app in the Postgres persistence layer.
