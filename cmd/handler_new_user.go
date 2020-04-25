@@ -40,13 +40,30 @@ func NewUser(c echo.Context) error {
 	c.Logger().Debug("Contact:", co)
 
 	var u models.UserFormData
+	u.TeamID = 1
 	u.LoginCODE = c.FormValue(commons.NewUserFormUserCode)
 	u.LoginPWD = c.FormValue(commons.NewUserFormPass)
 	u.SecurityGroup = commons.SecuGrpUser
 
 	c.Logger().Debug("User:", u)
 
-	user := models.NewUser(c, dbConn, u)
+	// check db connection
+	if c.Logger().Level() == 1 {
+		errQuery := commons.CheckPgDB(c.Logger(), dbConn)
+		if errQuery != nil {
+			return errQuery
+		}
+	}
+	c.Logger().Debugf("database is responding.")
+
+	user, errCo := models.NewUser(c, dbConn, u)
+	if errCo != nil {
+		c.Logger().Debug("errCo:", errCo)
+		e.TheError = errCo.Error()
+		c.JSON(http.StatusInternalServerError, e)
+		return errCo
+	}
+
 	errInsert := user.Insert()
 	if errInsert != nil {
 		c.Logger().Debug("errAdd:", errInsert)

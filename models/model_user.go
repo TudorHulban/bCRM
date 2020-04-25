@@ -27,10 +27,10 @@ type Contact struct {
 
 // UserFormData Structure holds information necessary for creating a user and coming from frontend.
 type UserFormData struct {
-	TeamID        int    `pg:",notnull" valid:"type(int)"` // security groups 2, 3 can only see teams tickets
-	SecurityGroup int    `pg:",notnull" valid:"type(int)"` // as per userRights, userRights = map[int]string{1: "admin", 2: "user", 3: "external user"}
-	LoginCODE     string `valid:"type(string)" json:"code" pg:",notnull,unique" `
-	LoginPWD      string `valid:"type(string)" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM, to be taken out as hash is enough
+	TeamID        int    `pg:",notnull" validate:"required"` // security groups 2, 3 can only see teams tickets
+	SecurityGroup int    `pg:",notnull" validate:"required"` // as per userRights, userRights = map[int]string{1: "admin", 2: "user", 3: "external user"}
+	LoginCODE     string `validate:"required" json:"code" pg:",notnull,unique" `
+	LoginPWD      string `validate:"required" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM, to be taken out as hash is enough
 }
 
 // User is the representation of the user of the app in the Postgres persistence layer.
@@ -54,25 +54,38 @@ type User struct {
 
 var userRights map[int]string
 
-func NewUser(c echo.Context, db *pg.DB, f UserFormData) *User {
+func NewUser(c echo.Context, db *pg.DB, f UserFormData) (*User, error) {
+	v := validator.New()
+
+	// validate data
+	errValid := v.Struct(f)
+	if errValid != nil {
+		c.Logger().Debugf("validation error:", errValid)
+		return nil, errValid
+	}
+	c.Logger().Debugf("structure is valid.")
+	c.Logger().Debugf("level: %v", c.Logger().Level())
+
+	// check db connection
+	if c.Logger().Level() == 1 {
+		errQuery := commons.CheckPgDB(c.Logger(), db)
+		if errQuery != nil {
+			return nil, errQuery
+		}
+	}
+	c.Logger().Debugf("database is responding.")
+
 	return &User{
 		UserFormData: f,
-		valid:        validator.New(),
+		valid:        v,
 		log:          c.Logger(),
 		db:           db,
-	}
+	}, nil
 }
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
 func (u *User) Insert() error {
-	u.log.Debugf("user data to insert: ", u.UserFormData)
-
-	errValid := u.valid.Struct(u.UserFormData)
-	if errValid != nil {
-		u.log.Debugf("validation error:", errValid)
-		return errValid
-	}
-	u.log.Debugf("structure is valid.")
+	u.log.Debugf("user data to insert: %s", u.UserFormData)
 
 	salt := GenerateRandomString(commons.SaltLength)
 	u.PasswordSALT = salt

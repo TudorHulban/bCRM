@@ -17,22 +17,25 @@ import (
 var dbConn *pg.DB
 
 func main() {
-	dbconnInfo := DBConnInfo{
-		Socket: commons.DBSocket,
-		User:   commons.DBUser,
-		Pass:   commons.DBPass,
-		DB:     commons.DBName,
-	}
+	e := echo.New()
+	e.HideBanner = true
+	e.DisableHTTP2 = true
+	e.Use(middleware.Logger())
+	e.Logger.SetLevel(log.DEBUG)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{"*"},
+	}))
+
 	dbConn := pg.Connect(&pg.Options{
-		Addr:     dbconnInfo.Socket,
-		User:     dbconnInfo.User,
-		Password: dbconnInfo.Pass,
-		Database: dbconnInfo.DB,
+		Addr:     commons.DBSocket,
+		User:     commons.DBUser,
+		Password: commons.DBPass,
+		Database: commons.DBName,
 	})
-	defer dbConn.Close()
 
 	// check db conn
-	errConn := CheckPgDB(dbConn)
+	errConn := commons.CheckPgDB(e.Logger, dbConn)
 	if errConn != nil {
 		log.Print("Could not create DB schema. Exiting ...", errConn)
 		os.Exit(1)
@@ -44,15 +47,6 @@ func main() {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)
 	}
-
-	e := echo.New()
-	e.HideBanner = true
-	e.Use(middleware.Logger())
-	e.Logger.SetLevel(log.DEBUG)
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{"*"},
-	}))
 
 	// Routes
 	// Public routes
@@ -71,6 +65,8 @@ func main() {
 	}()
 
 	handleInterrupt(e, commons.ShutdownGraceSeconds)
+	e.Logger.Info("-----------closing DB")
+	dbConn.Close()
 }
 
 func handleInterrupt(s *echo.Echo, graceSeconds int) {

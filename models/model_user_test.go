@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserAdd(t *testing.T) {
+func TestUserInsert(t *testing.T) {
 	dbConn := pg.Connect(&pg.Options{
 		Addr:     commons.DBSocket,
 		User:     commons.DBUser,
@@ -26,5 +26,4 @@ func TestUserAdd(t *testing.T) {
 
 	err := user.Insert()
 	assert.NoError(t, err)
-
 }
