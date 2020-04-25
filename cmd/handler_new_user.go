@@ -11,6 +11,7 @@ import (
 // NewUser Handler to create a new user. To be used by user management roles.
 // Information needed for creating a user is:
 // Name, UserCode, Password
+// RAW testing: curl -d "name=john&code=1234&pass=abcd" -X POST http://localhost:8001/newuser
 func NewUser(c echo.Context) error {
 	var e httpError
 	c.Logger().Debug("New User")
