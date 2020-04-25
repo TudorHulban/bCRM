@@ -33,10 +33,8 @@ type UserFormData struct {
 	LoginPWD      string `validate:"required" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM, to be taken out as hash is enough
 }
 
-// User is the representation of the user of the app in the Postgres persistence layer.
-// Several methods are defined on this structure in order to satisfy RDBMSUser interface.
-// Sorted for maligned.
-type User struct {
+// UserData Structure holds the actual user persisted user information.
+type UserData struct {
 	ID int64 `json:"ID" valid:"-"` // primary key, provided after insert thus pointer needed.
 	UserFormData
 
@@ -46,7 +44,13 @@ type User struct {
 
 	//ContactIDs  []int64    `valid:"type(string), optional"` // user should accommodate several contacts
 	//ContactInfo []*Contact `pg:"-" valid:"-"`               // when user is retrieved the slice would contain the contacts
+}
 
+// User is the representation of the user of the app in the Postgres persistence layer.
+// Several methods are defined on this structure in order to satisfy RDBMSUser interface.
+// Sorted for maligned.
+type User struct {
+	UserData
 	valid *validator.Validate
 	log   echo.Logger
 	db    *pg.DB
@@ -54,17 +58,21 @@ type User struct {
 
 var userRights map[int]string
 
-func NewUser(c echo.Context, db *pg.DB, f UserFormData) (*User, error) {
+// NewUser Constructor for when interacting with the user model.
+// Use validation for inserts or updates. No validation for selects.
+func NewUser(c echo.Context, db *pg.DB, f UserFormData, noValidation bool) (*User, error) {
 	v := validator.New()
 
 	// validate data
-	errValid := v.Struct(f)
-	if errValid != nil {
-		c.Logger().Debugf("validation error:", errValid)
-		return nil, errValid
+	if !noValidation {
+		errValid := v.Struct(f)
+		if errValid != nil {
+			c.Logger().Debugf("validation error:", errValid)
+			return nil, errValid
+		}
+		c.Logger().Debugf("structure is valid.")
+		c.Logger().Debugf("level: %v", c.Logger().Level())
 	}
-	c.Logger().Debugf("structure is valid.")
-	c.Logger().Debugf("level: %v", c.Logger().Level())
 
 	// check db connection
 	if c.Logger().Level() == 1 {
@@ -76,25 +84,25 @@ func NewUser(c echo.Context, db *pg.DB, f UserFormData) (*User, error) {
 	c.Logger().Debugf("database is responding.")
 
 	return &User{
-		UserFormData: f,
-		valid:        v,
-		log:          c.Logger(),
-		db:           db,
+		UserData: UserData{UserFormData: f},
+		valid:    v,
+		log:      c.Logger(),
+		db:       db,
 	}, nil
 }
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
 func (u *User) Insert() error {
-	u.log.Debugf("user data to insert: %s", u.UserFormData)
+	u.log.Debugf("user data to insert: %s", u.UserData.UserFormData)
 
 	salt := GenerateRandomString(commons.SaltLength)
-	u.PasswordSALT = salt
+	u.UserData.PasswordSALT = salt
 
-	hash, errHash := HashPassword(u.UserFormData.LoginPWD, u.PasswordSALT)
+	hash, errHash := HashPassword(u.UserData.UserFormData.LoginPWD, u.UserData.PasswordSALT)
 	if errHash != nil {
 		return errHash
 	}
-	u.PasswordHASH = hash
+	u.UserData.PasswordHASH = hash
 
 	/*
 		for _, v := range userData.ContactInfo {
@@ -106,7 +114,7 @@ func (u *User) Insert() error {
 		}
 	*/
 
-	if errInsertUser := u.db.Insert(u); errInsertUser != nil {
+	if errInsertUser := u.db.Insert(&u.UserData); errInsertUser != nil {
 		return errInsertUser
 	}
 
@@ -124,16 +132,26 @@ func (u *User) Insert() error {
 	return nil
 }
 
-/*
+// RequesterbyID Method based on user ID fetches full user info.
+func (u *User) GetbyID(userID int64) (UserData, error) {
+	result := UserData{}
+	errSelect := u.db.Model(&result).Where("id = ?", userID).Select()
 
-// GetUserByPK fetches user info from Pg and returns a user type.
-func (u *Userpg) GetUserByPK(pID int64) (Userpg, error) {
+	return result, errSelect
+}
+
+/*
+// GetUserByPK Method fetches user info from Pg and returns a user and error.
+func (u *User) GetUserByID(userID int64) (*User, error) {
+
 	result := User{ID: pID}
+
 	// verify if requester
 	requester, errSelectRequester := getRequesterSecurityGroup(b, 1)
 	if errSelectRequester != nil {
 		return result, errSelectRequester
 	}
+
 	var errSelect error
 	switch requester.SecurityGroup {
 	case 1:

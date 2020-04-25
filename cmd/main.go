@@ -27,7 +27,7 @@ func main() {
 		AllowHeaders: []string{"*"},
 	}))
 
-	dbConn := pg.Connect(&pg.Options{
+	dbConn = pg.Connect(&pg.Options{
 		Addr:     commons.DBSocket,
 		User:     commons.DBUser,
 		Password: commons.DBPass,
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	// Create DB schema
-	errSchema := NewSchema(dbConn, interface{}(&models.SLAPriority{}), interface{}(&models.SLA{}), interface{}(&models.SLAValue{}), interface{}(&models.TicketType{}), interface{}(&models.TicketStatus{}), interface{}(&models.Resource{}), interface{}(&models.ResourceMove{}), interface{}(&models.Event{}), interface{}(&models.TicketMovement{}), interface{}(&models.Ticket{}), interface{}(&models.Team{}), interface{}(&models.User{}), interface{}(&models.File{}), interface{}(&models.Contact{}))
+	errSchema := NewSchema(dbConn, interface{}(&models.SLAPriority{}), interface{}(&models.SLA{}), interface{}(&models.SLAValue{}), interface{}(&models.TicketType{}), interface{}(&models.TicketStatus{}), interface{}(&models.Resource{}), interface{}(&models.ResourceMove{}), interface{}(&models.Event{}), interface{}(&models.TicketMovement{}), interface{}(&models.Ticket{}), interface{}(&models.Team{}), interface{}(&models.UserData{}), interface{}(&models.File{}), interface{}(&models.Contact{}))
 	if errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)
