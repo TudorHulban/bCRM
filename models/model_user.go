@@ -5,7 +5,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo"
 
-	"github.com/TudorHulban/bCRM/pkg/constants"
+	"github.com/TudorHulban/bCRM/pkg/commons"
 )
 
 // Needs cache for users. Not to go to db for user ID.
@@ -30,13 +30,11 @@ type Contact struct {
 // Sorted for maligned.
 type User struct {
 	ID int64 `json:"ID" valid:"-"` // primary key, provided after insert thus pointer needed.
-
 	UserFormData
 
-	AssignedOpenTickets int `valid:"-"` // number of assigned tickets
-
-	PasswordSALT string `valid:"type(string), optional" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM
-	PasswordHASH string `valid:"type(string)" json:"-" pg:",notnull `           // should not be sent in JSON, exported for ORM
+	AssignedOpenTickets int    `valid:"-"`                                             // number of assigned tickets
+	PasswordSALT        string `valid:"type(string), optional" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM
+	PasswordHASH        string `valid:"type(string)" json:"-" pg:",notnull `           // should not be sent in JSON, exported for ORM
 
 	ContactIDs  []int64    `valid:"type(string), optional"` // user should accommodate several contacts
 	ContactInfo []*Contact `pg:"-" valid:"-"`               // when user is retrieved the slice would contain the contacts
@@ -75,7 +73,7 @@ func (u *User) Insert() error {
 	}
 	u.log.Debugf("structure is valid.")
 
-	salt := GenerateRandomString(constants.SaltLength)
+	salt := GenerateRandomString(commons.SaltLength)
 	u.PasswordSALT = salt
 
 	hash, errHash := HashPassword(u.UserFormData.LoginPWD, u.PasswordSALT)

@@ -1,4 +1,4 @@
-package main
+package models
 
 // File is a type used for uploading files for events. The files are uploaded and persisted to RDBMS.
 type File struct {

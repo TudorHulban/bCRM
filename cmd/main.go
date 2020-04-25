@@ -6,6 +6,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/TudorHulban/bCRM/models"
+	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -16,10 +18,10 @@ var dbConn *pg.DB
 
 func main() {
 	dbconnInfo := DBConnInfo{
-		Socket: DBSocket,
-		User:   DBUser,
-		Pass:   DBPass,
-		DB:     DBName,
+		Socket: commons.DBSocket,
+		User:   commons.DBUser,
+		Pass:   commons.DBPass,
+		DB:     commons.DBName,
 	}
 	dbConn := pg.Connect(&pg.Options{
 		Addr:     dbconnInfo.Socket,
@@ -37,7 +39,7 @@ func main() {
 	}
 
 	// Create DB schema
-	errSchema := NewSchema(dbConn, interface{}(&SLAPriority{}), interface{}(&SLA{}), interface{}(&SLAValue{}), interface{}(&TicketType{}), interface{}(&TicketStatus{}), interface{}(&Resource{}), interface{}(&ResourceMove{}), interface{}(&Event{}), interface{}(&TicketMovement{}), interface{}(&Ticket{}), interface{}(&Team{}), interface{}(&User{}), interface{}(&File{}), interface{}(&Contact{}))
+	errSchema := NewSchema(dbConn, interface{}(&models.SLAPriority{}), interface{}(&models.SLA{}), interface{}(&models.SLAValue{}), interface{}(&models.TicketType{}), interface{}(&models.TicketStatus{}), interface{}(&models.Resource{}), interface{}(&models.ResourceMove{}), interface{}(&models.Event{}), interface{}(&models.TicketMovement{}), interface{}(&models.Ticket{}), interface{}(&models.Team{}), interface{}(&models.User{}), interface{}(&models.File{}), interface{}(&models.Contact{}))
 	if errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)
@@ -54,21 +56,21 @@ func main() {
 
 	// Routes
 	// Public routes
-	e.GET(EndpointLive, Live)
+	e.GET(commons.EndpointLive, Live)
 	//e.POST(EndpointLogin, LoginWithPassword)
-	e.POST(EndpointNewUser, NewUser)
+	e.POST(commons.EndpointNewUser, NewUser)
 
 	// private routes
 	//r := e.Group("/r")
 
 	// Start server
 	go func() {
-		if err := e.Start(ListeningSocket); err != nil {
+		if err := e.Start(commons.ListeningSocket); err != nil {
 			e.Logger.Info("shutting down the server")
 		}
 	}()
 
-	handleInterrupt(e, ShutdownGraceSeconds)
+	handleInterrupt(e, commons.ShutdownGraceSeconds)
 }
 
 func handleInterrupt(s *echo.Echo, graceSeconds int) {

@@ -1,4 +1,4 @@
-package main
+package models
 
 // SLA type abstracts service level agreement information. Ex. Gold, Silver, Bronze.
 type SLA struct {
