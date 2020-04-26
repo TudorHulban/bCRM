@@ -65,8 +65,8 @@ func main() {
 	}()
 
 	handleInterrupt(e, commons.ShutdownGraceSeconds)
-	e.Logger.Info("-----------closing DB")
-	dbConn.Close()
+	e.Logger.Info("closing DB")
+	dbConn.Close() // to switch to defer maybe
 }
 
 func handleInterrupt(s *echo.Echo, graceSeconds int) {

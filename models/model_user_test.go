@@ -6,6 +6,7 @@ import (
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,6 +20,7 @@ func TestUserInsert(t *testing.T) {
 	defer dbConn.Close()
 
 	e := echo.New()
+	e.Logger.SetLevel(log.DEBUG)
 	ectx := e.NewContext(nil, nil)
 
 	f := UserFormData{TeamID: 1, LoginCODE: "xxx3", SecurityGroup: 1, LoginPWD: "abcd"}
@@ -38,12 +40,14 @@ func TestUserSelectByID(t *testing.T) {
 	defer dbConn.Close()
 
 	e := echo.New()
+	e.Logger.SetLevel(log.DEBUG)
 	ectx := e.NewContext(nil, nil)
 
 	f := UserFormData{}
 	user, errNew := NewUser(ectx, dbConn, f, true)
 	assert.NoError(t, errNew)
 
-	_, err := user.GetbyID(1)
+	u, err := user.GetbyID(1)
 	assert.NoError(t, err)
+	ectx.Logger().Debugf("user ID:%v", u.ID)
 }
