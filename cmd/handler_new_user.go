@@ -40,7 +40,6 @@ func NewUser(c echo.Context) error {
 	c.Logger().Debug("Contact:", co)
 
 	var u models.UserFormData
-	u.TeamID = 1
 	u.LoginCODE = c.FormValue(commons.NewUserFormUserCode)
 	u.LoginPWD = c.FormValue(commons.NewUserFormPass)
 	u.SecurityGroup = commons.SecuGrpUser

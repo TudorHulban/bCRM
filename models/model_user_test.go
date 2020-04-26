@@ -23,11 +23,11 @@ func TestUserInsert(t *testing.T) {
 	e.Logger.SetLevel(log.DEBUG)
 	ectx := e.NewContext(nil, nil)
 
-	f := UserFormData{TeamID: 1, LoginCODE: "xxx3", SecurityGroup: 1, LoginPWD: "abcd"}
+	f := UserFormData{LoginCODE: "xxx3", SecurityGroup: 1, LoginPWD: "abcd"}
 	user, errNew := NewUser(ectx, dbConn, f, false)
-	assert.NoError(t, errNew)
-
-	assert.NoError(t, user.Insert())
+	if assert.NoError(t, errNew) {
+		assert.NoError(t, user.Insert())
+	}
 }
 
 func TestUserSelectByID(t *testing.T) {

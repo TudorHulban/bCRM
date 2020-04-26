@@ -1,11 +1,9 @@
 package models
 
 import (
-	"github.com/go-pg/pg/v9"
-	"github.com/go-playground/validator"
-	"github.com/labstack/echo"
-
 	"github.com/TudorHulban/bCRM/pkg/commons"
+	"github.com/go-pg/pg/v9"
+	"github.com/labstack/echo"
 )
 
 // Needs cache for users. Not to go to db for user ID.
@@ -27,7 +25,7 @@ type Contact struct {
 
 // UserFormData Structure holds information necessary for creating a user and coming from frontend.
 type UserFormData struct {
-	TeamID        int    `pg:",notnull" validate:"required"` // security groups 2, 3 can only see teams tickets
+	//TeamID        int    `pg:",notnull" validate:"required"` // security groups 2, 3 can only see teams tickets
 	SecurityGroup int    `pg:",notnull" validate:"required"` // as per userRights, userRights = map[int]string{1: "admin", 2: "user", 3: "external user"}
 	LoginCODE     string `validate:"required" json:"code" pg:",notnull,unique" `
 	LoginPWD      string `validate:"required" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM, to be taken out as hash is enough
@@ -48,12 +46,9 @@ type UserData struct {
 
 // User is the representation of the user of the app in the Postgres persistence layer.
 // Several methods are defined on this structure in order to satisfy RDBMSUser interface.
-// Sorted for maligned.
 type User struct {
 	UserData
-	valid *validator.Validate
-	log   echo.Logger
-	db    *pg.DB
+	tools
 }
 
 var userRights map[int]string
@@ -61,20 +56,15 @@ var userRights map[int]string
 // NewUser Constructor for when interacting with the user model.
 // Use validation for inserts or updates. No validation for selects.
 func NewUser(c echo.Context, db *pg.DB, f UserFormData, noValidation bool) (*User, error) {
-	v := validator.New()
-
 	// validate data
 	if !noValidation {
-		errValid := v.Struct(f)
+		errValid := isValidStruct(f, c.Logger())
 		if errValid != nil {
-			c.Logger().Debugf("validation error:", errValid)
 			return nil, errValid
 		}
-		c.Logger().Debugf("structure is valid.")
-		c.Logger().Debugf("level: %v", c.Logger().Level())
 	}
 
-	// check db connection
+	// check db connection. debug level = 1
 	if c.Logger().Level() == 1 {
 		errQuery := commons.CheckPgDB(c.Logger(), db)
 		if errQuery != nil {
@@ -85,9 +75,10 @@ func NewUser(c echo.Context, db *pg.DB, f UserFormData, noValidation bool) (*Use
 
 	return &User{
 		UserData: UserData{UserFormData: f},
-		valid:    v,
-		log:      c.Logger(),
-		db:       db,
+		tools: tools{
+			log: c.Logger(),
+			db:  db,
+		},
 	}, nil
 }
 
@@ -114,8 +105,8 @@ func (u *User) Insert() error {
 		}
 	*/
 
-	if errInsertUser := u.db.Insert(&u.UserData); errInsertUser != nil {
-		return errInsertUser
+	if errInsert := u.db.Insert(&u.UserData); errInsert != nil {
+		return errInsert
 	}
 
 	/*
