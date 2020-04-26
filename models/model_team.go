@@ -21,6 +21,7 @@ type Team struct {
 	tools
 }
 
+// NewTeam Constructor for when interacting with the model.
 func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Team, error) {
 	// validate data
 	if !noValidation {

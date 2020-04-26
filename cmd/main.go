@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TudorHulban/bCRM/models"
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
@@ -42,7 +41,7 @@ func main() {
 	}
 
 	// Create DB schema
-	errSchema := NewSchema(dbConn, interface{}(&models.SLAPriority{}), interface{}(&models.SLA{}), interface{}(&models.SLAValue{}), interface{}(&models.TicketType{}), interface{}(&models.TicketStatus{}), interface{}(&models.Resource{}), interface{}(&models.ResourceMove{}), interface{}(&models.Event{}), interface{}(&models.TicketMovement{}), interface{}(&models.Ticket{}), interface{}(&models.TeamFormData{}), interface{}(&models.UserData{}), interface{}(&models.File{}), interface{}(&models.Contact{}))
+	errSchema := createSchema(dbConn)
 	if errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)

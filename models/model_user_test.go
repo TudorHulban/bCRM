@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserInsert(t *testing.T) {
+func Test_User_Insert(t *testing.T) {
 	dbConn := pg.Connect(&pg.Options{
 		Addr:     commons.DBSocket,
 		User:     commons.DBUser,
@@ -30,7 +30,7 @@ func TestUserInsert(t *testing.T) {
 	}
 }
 
-func TestUserSelectByID(t *testing.T) {
+func Test_User_SelectByID(t *testing.T) {
 	dbConn := pg.Connect(&pg.Options{
 		Addr:     commons.DBSocket,
 		User:     commons.DBUser,

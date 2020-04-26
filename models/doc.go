@@ -1,6 +1,8 @@
 /*
 package models Contains application models.
 
+The model tools added for easier operations and code maintenance.
+
 How security works:
 A. For user information fetching and management
 1. there is app admin that can create, fetch, delete and update users. secu level: 4
