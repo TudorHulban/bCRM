@@ -10,7 +10,7 @@ import (
 type TeamFormData struct {
 	tableName       struct{} `pg:"teams"`
 	ID              int64
-	CODE            string `validate:"required, alphanum" pg:",notnull,unique"`
+	CODE            string `validate:"required" pg:",notnull,unique"`
 	Name            string `validate:"required" pg:",notnull,unique"`
 	Description     string `validate:"required" pg:",notnull"`
 	AssignedTickets int    `pg:"numbtickets"`

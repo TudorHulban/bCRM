@@ -6,6 +6,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/TudorHulban/bCRM/models"
+
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
@@ -14,8 +16,11 @@ import (
 )
 
 var dbConn *pg.DB
+var ctx context.Context
 
 func main() {
+	ctx = context.Background()
+
 	e := echo.New()
 	e.HideBanner = true
 	e.DisableHTTP2 = true
@@ -40,12 +45,22 @@ func main() {
 		os.Exit(1)
 	}
 
+	// check schema was created already
+	exists, errExists := models.TableExists(ctx, dbConn, &models.UserData{}, "users", 5, e.Logger)
+	if errExists != nil {
+		e.Logger.Debug("table users does not exist:", errExists, exists)
+		// currently does not work. issue has been opened in orm lib
+	}
+
 	// Create DB schema
 	errSchema := createSchema(dbConn)
 	if errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)
 	}
+
+	// populate schema
+	populateSchema(ctx, e.NewContext(nil, nil), dbConn)
 
 	// Routes
 	// Public routes
