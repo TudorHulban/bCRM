@@ -1,6 +1,9 @@
 package models
 
 import (
+	"context"
+	"time"
+
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
@@ -50,10 +53,13 @@ func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Tea
 	}, nil
 }
 
-func (t *Team) Insert() error {
+func (t *Team) Insert(ctx context.Context, timeoutSecs int) error {
 	t.log.Debugf("team data to insert: %v", t.TeamFormData)
 
-	if errInsert := t.db.Insert(&t.TeamFormData); errInsert != nil {
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
+	defer cancel()
+
+	if errInsert := t.db.WithContext(ctx).Insert(&t.TeamFormData); errInsert != nil {
 		return errInsert
 	}
 	return nil

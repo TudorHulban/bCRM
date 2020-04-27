@@ -1,6 +1,9 @@
 package models
 
 import (
+	"context"
+	"time"
+
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
@@ -84,7 +87,7 @@ func NewUser(c echo.Context, db *pg.DB, f UserFormData, noValidation bool) (*Use
 }
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
-func (u *User) Insert() error {
+func (u *User) Insert(ctx context.Context, timeoutSecs int) error {
 	u.log.Debugf("user data to insert: %v", u.UserData.UserFormData)
 
 	salt := GenerateRandomString(commons.SaltLength)
@@ -106,7 +109,10 @@ func (u *User) Insert() error {
 		}
 	*/
 
-	if errInsert := u.db.Insert(&u.UserData); errInsert != nil {
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
+	defer cancel()
+
+	if errInsert := u.db.WithContext(ctx).Insert(&u.UserData); errInsert != nil {
 		return errInsert
 	}
 
@@ -125,9 +131,12 @@ func (u *User) Insert() error {
 }
 
 // GetbyID Method based on user ID fetches full user info.
-func (u *User) GetbyID(userID int64) (UserData, error) {
+func (u *User) GetbyID(ctx context.Context, timeoutSecs int, userID int64) (UserData, error) {
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
+	defer cancel()
+
 	result := UserData{}
-	errSelect := u.db.Model(&result).Where("id = ?", userID).Select()
+	errSelect := u.db.WithContext(ctx).Model(&result).Where("id = ?", userID).Select()
 
 	u.log.Debug("fetched:", result)
 	return result, errSelect
