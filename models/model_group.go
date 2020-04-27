@@ -6,24 +6,24 @@ import (
 	"github.com/labstack/echo"
 )
 
-// Team Structure holding team fields. Every application user belongs to a team.
-type TeamFormData struct {
-	tableName       struct{} `pg:"teams"`
+// GroupFormData Structure holding team fields. A team could belong to a group.
+type GroupFormData struct {
+	tableName       struct{} `pg:"groups"`
 	ID              int64
-	CODE            string `validate:"required, alphanum" pg:",notnull,unique"`
+	CODE            string `validate:"required" pg:",notnull,unique"`
 	Name            string `validate:"required" pg:",notnull,unique"`
 	Description     string `validate:"required" pg:",notnull"`
 	AssignedTickets int    `pg:"numbtickets"`
 	ManagerID       int64  `pg:"managerid"`
 }
 
-type Team struct {
-	TeamFormData
+type Group struct {
+	GroupFormData
 	tools
 }
 
-// NewTeam Constructor for when interacting with the model.
-func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Team, error) {
+// NewGroup Constructor for when interacting with the model.
+func NewGroup(c echo.Context, db *pg.DB, f GroupFormData, noValidation bool) (*Group, error) {
 	// validate data
 	if !noValidation {
 		errValid := isValidStruct(f, c.Logger())
@@ -41,8 +41,8 @@ func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Tea
 	}
 	c.Logger().Debugf("database is responding.")
 
-	return &Team{
-		TeamFormData: f,
+	return &Group{
+		GroupFormData: f,
 		tools: tools{
 			log: c.Logger(),
 			db:  db,
@@ -50,10 +50,10 @@ func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Tea
 	}, nil
 }
 
-func (t *Team) Insert() error {
-	t.log.Debugf("team data to insert: %v", t.TeamFormData)
+func (t *Group) Insert() error {
+	t.log.Debugf("group data to insert: %v", t.GroupFormData)
 
-	if errInsert := t.db.Insert(&t.TeamFormData); errInsert != nil {
+	if errInsert := t.db.Insert(&t.GroupFormData); errInsert != nil {
 		return errInsert
 	}
 	return nil

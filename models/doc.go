@@ -16,5 +16,9 @@ A. For user information fetching and management
 Modeling:
 1. define teams table
 2. define teams security table: ID, Team ID, User ID, type of access.
+3. each user could create users up to his secu level.
+
+B. For pages / modules
+For a user accessing a module (page in front end) an entry for the user ID would ned to exist in the modules security table.
 */
 package models

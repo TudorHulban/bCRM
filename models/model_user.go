@@ -25,7 +25,7 @@ type Contact struct {
 
 // UserFormData Structure holds information necessary for creating a user and coming from frontend.
 type UserFormData struct {
-	//TeamID        int    `pg:",notnull" validate:"required"` // security groups 2, 3 can only see teams tickets
+	TeamID        int    `validate:"required"`               // triggers an entry in teams data table.
 	SecurityGroup int    `pg:",notnull" validate:"required"` // as per userRights, userRights = map[int]string{1: "admin", 2: "user", 3: "external user"}
 	LoginCODE     string `validate:"required" json:"code" pg:",notnull,unique" `
 	LoginPWD      string `validate:"required" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM, to be taken out as hash is enough
@@ -33,7 +33,8 @@ type UserFormData struct {
 
 // UserData Structure holds the actual user persisted user information.
 type UserData struct {
-	ID int64 `json:"ID" valid:"-"` // primary key, provided after insert thus pointer needed.
+	tableName struct{} `pg:"users"`
+	ID        int64    `json:"ID" valid:"-"` // primary key, provided after insert thus pointer needed.
 	UserFormData
 
 	AssignedOpenTickets int    `valid:"-"`                                             // number of assigned tickets
