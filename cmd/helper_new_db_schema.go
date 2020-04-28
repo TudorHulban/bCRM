@@ -26,7 +26,6 @@ func populateSchema(ctx context.Context, c echo.Context, db *pg.DB) error {
 	if errTeams := initTeams(ctx, c, db); errTeams != nil {
 		return errTeams
 	}
-
 	if errGroups := initGroups(ctx, c, db); errGroups != nil {
 		return errGroups
 	}
