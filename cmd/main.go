@@ -46,21 +46,22 @@ func main() {
 	}
 
 	// check schema was created already
-	exists, errExists := models.TableExists(ctx, dbConn, &models.UserData{}, "users", 5, e.Logger)
-	if errExists != nil {
+	if exists, errExists := models.TableExists(ctx, dbConn, &models.UserData{}, "users", 5, e.Logger); errExists != nil {
 		e.Logger.Debug("table users does not exist:", errExists, exists)
 		// currently does not work. issue has been opened in orm lib
 	}
 
-	// Create DB schema
-	errSchema := createSchema(dbConn)
-	if errSchema != nil {
+	// create DB schema
+	if errSchema := createSchema(dbConn); errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)
 	}
 
 	// populate schema
-	populateSchema(ctx, e.NewContext(nil, nil), dbConn)
+	if errPopul := populateSchema(ctx, e.NewContext(nil, nil), dbConn); errPopul != nil {
+		log.Print("Could not populate DB schema. Exiting ...", errPopul)
+		os.Exit(1)
+	}
 
 	// Routes
 	// Public routes

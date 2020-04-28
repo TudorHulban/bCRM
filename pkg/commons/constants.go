@@ -1,5 +1,8 @@
 package commons
 
+// Context
+const CTXTimeOutSecs = 5
+
 // Database Initialization
 const DBSocket = "0.0.0.0:5432"
 const DBUser = "postgres"

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"context"
+
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
@@ -50,7 +52,7 @@ func NewGroup(c echo.Context, db *pg.DB, f GroupFormData, noValidation bool) (*G
 	}, nil
 }
 
-func (t *Group) Insert() error {
+func (t *Group) Insert(ctx context.Context, timeoutSecs int) error {
 	t.log.Debugf("group data to insert: %v", t.GroupFormData)
 
 	if errInsert := t.db.Insert(&t.GroupFormData); errInsert != nil {

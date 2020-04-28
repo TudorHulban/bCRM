@@ -63,7 +63,7 @@ func NewUser(c echo.Context) error {
 		return errCo
 	}
 
-	errInsert := user.Insert()
+	errInsert := user.Insert(ctx, commons.CTXTimeOutSecs)
 	if errInsert != nil {
 		c.Logger().Debug("errAdd:", errInsert)
 		e.TheError = errInsert.Error()

@@ -23,9 +23,12 @@ func newSchema(db *pg.DB, models []interface{}) error {
 }
 
 func populateSchema(ctx context.Context, c echo.Context, db *pg.DB) error {
-	errTeams := initTeams(ctx, c, db)
-	if errTeams != nil {
+	if errTeams := initTeams(ctx, c, db); errTeams != nil {
 		return errTeams
+	}
+
+	if errGroups := initGroups(ctx, c, db); errGroups != nil {
+		return errGroups
 	}
 	return nil
 }
