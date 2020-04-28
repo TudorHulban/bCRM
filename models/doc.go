@@ -9,9 +9,8 @@ A. For user information fetching and management
 2. there is group admin that has rights for group as app admin for app. secu level: 3
 3. there is team admin. team admin may be normal user for another team. secu level: 2
 3. there is team managers. manager is just a label. same security rights as normal user. no secu level for now.
-4. there is normal user. normal user may be in different teams. secu level: 0
+4. there is normal user. normal user may be in different teams. secu level: 1
 
-(secu level 1 is reserved, maybe something comes out).
 
 Modeling:
 1. define teams table

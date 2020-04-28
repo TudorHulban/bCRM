@@ -50,10 +50,10 @@ func initGroups(ctx context.Context, c echo.Context, db *pg.DB) error {
 
 func initUsers(ctx context.Context, c echo.Context, db *pg.DB) error {
 	users := []models.UserFormData{}
-	users = append(groups, models.GroupFormData{CODE: "ADMIN", Name: "APP Admin", Description: "Account for application admin."})
-	users = append(groups, models.GroupFormData{CODE: "USER1", Name: "John SMith", Description: "Test account for user w/o rights."})
+	users = append(users, models.UserFormData{TeamID: 1, SecurityGroup: 4, LoginCODE: "ADMIN", LoginPWD: "1234"})
+	users = append(users, models.UserFormData{TeamID: 2, SecurityGroup: 1, LoginCODE: "JOHN", LoginPWD: "abcd"})
 
-	for _, v := range groups {
+	for _, v := range users {
 		u, errCo := models.NewUser(c, db, v, false)
 		if errCo != nil {
 			return errCo

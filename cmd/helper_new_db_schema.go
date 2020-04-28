@@ -30,5 +30,8 @@ func populateSchema(ctx context.Context, c echo.Context, db *pg.DB) error {
 	if errGroups := initGroups(ctx, c, db); errGroups != nil {
 		return errGroups
 	}
+	if errUsers := initUsers(ctx, c, db); errUsers != nil {
+		return errUsers
+	}
 	return nil
 }

@@ -10,7 +10,7 @@ func isValidStruct(s interface{}, log echo.Logger) error {
 
 	errValid := v.Struct(s)
 	if errValid != nil {
-		log.Debugf("structure %s is invalid. error: %s", s, errValid)
+		log.Debugf("structure %v is invalid. error: %s", s, errValid)
 		return errValid
 	}
 	return nil
