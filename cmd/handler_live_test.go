@@ -8,6 +8,7 @@ import (
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
+	"github.com/steinfletcher/apitest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,4 +24,18 @@ func Test1Live(t *testing.T) {
 	resp := w.Result()
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}
+
+func Test2Live(t *testing.T) {
+	e := echo.New()
+	e.Logger.SetLevel(log.DEBUG)
+	e.GET(commons.EndpointLive, Live)
+
+	apitest.New().
+		Handler(e).
+		Get(commons.EndpointLive).
+		Expect(t).
+		Status(http.StatusOK).
+		Body(`{"ok":"OK"}`).
+		End()
 }

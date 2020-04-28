@@ -52,7 +52,8 @@ func NewUser(c echo.Context) error {
 		if errQuery != nil {
 			return errQuery
 		}
-	} c.Logger().Debugf("database is responding.")
+	}
+	c.Logger().Debugf("database is responding.")
 
 	user, errCo := models.NewUser(c, dbConn, u, false)
 	if errCo != nil {
