@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // newSchema Creates tables in PostgreSQL with the help of the ORM and based on passed models.

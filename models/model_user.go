@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
 

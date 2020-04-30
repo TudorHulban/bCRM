@@ -3,7 +3,7 @@ package commons
 import (
 	"errors"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func CheckPgDB(log echo.Logger) error {

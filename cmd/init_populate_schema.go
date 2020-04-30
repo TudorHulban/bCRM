@@ -7,7 +7,7 @@ import (
 
 	"github.com/TudorHulban/bCRM/models"
 	"github.com/go-pg/pg/v9"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func initTeams(ctx context.Context, c echo.Context, db *pg.DB) error {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // GroupFormData Structure holding team fields. A team could belong to a group.

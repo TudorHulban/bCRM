@@ -15,6 +15,8 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+
 	e := echo.New()
 	e.HideBanner = true
 	e.DisableHTTP2 = true

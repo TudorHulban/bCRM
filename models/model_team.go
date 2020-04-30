@@ -6,7 +6,7 @@ import (
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // Team Structure holding team fields. Every application user belongs to a team.

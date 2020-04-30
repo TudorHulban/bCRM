@@ -6,7 +6,7 @@ import (
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func TableExists(ctx context.Context, model interface{}, table string, timeoutSecs int, log echo.Logger) (bool, error) {

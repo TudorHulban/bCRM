@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/go-playground/validator"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func isValidStruct(s interface{}, log echo.Logger) error {
