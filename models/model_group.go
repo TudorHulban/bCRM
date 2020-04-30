@@ -36,7 +36,7 @@ func NewGroup(c echo.Context, db *pg.DB, f GroupFormData, noValidation bool) (*G
 
 	// check db connection. debug level = 1
 	if c.Logger().Level() == 1 {
-		errQuery := commons.CheckPgDB(c.Logger(), db)
+		errQuery := commons.CheckPgDB(c.Logger())
 		if errQuery != nil {
 			return nil, errQuery
 		}

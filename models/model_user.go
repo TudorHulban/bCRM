@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
-	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
 )
 
@@ -59,7 +58,7 @@ var userRights map[int]string
 
 // NewUser Constructor for when interacting with the user model.
 // Use validation for inserts or updates. No validation for selects.
-func NewUser(c echo.Context, db *pg.DB, f UserFormData, noValidation bool) (*User, error) {
+func NewUser(c echo.Context, f UserFormData, noValidation bool) (*User, error) {
 	// validate data
 	if !noValidation {
 		errValid := isValidStruct(f, c.Logger())
@@ -70,7 +69,7 @@ func NewUser(c echo.Context, db *pg.DB, f UserFormData, noValidation bool) (*Use
 
 	// check db connection. debug level = 1
 	if c.Logger().Level() == 1 {
-		errQuery := commons.CheckPgDB(c.Logger(), db)
+		errQuery := commons.CheckPgDB(c.Logger())
 		if errQuery != nil {
 			return nil, errQuery
 		}
@@ -81,7 +80,7 @@ func NewUser(c echo.Context, db *pg.DB, f UserFormData, noValidation bool) (*Use
 		UserData: UserData{UserFormData: f},
 		tools: tools{
 			log: c.Logger(),
-			db:  db,
+			db:  commons.DB(),
 		},
 	}, nil
 }

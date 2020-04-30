@@ -9,13 +9,11 @@ import (
 	"github.com/TudorHulban/bCRM/models"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
-	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
 )
 
-var dbConn *pg.DB
 var ctx context.Context
 
 func main() {
@@ -31,34 +29,27 @@ func main() {
 		AllowHeaders: []string{"*"},
 	}))
 
-	dbConn = pg.Connect(&pg.Options{
-		Addr:     commons.DBSocket,
-		User:     commons.DBUser,
-		Password: commons.DBPass,
-		Database: commons.DBName,
-	})
-
 	// check db conn
-	errConn := commons.CheckPgDB(e.Logger, dbConn)
+	errConn := commons.CheckPgDB(e.Logger)
 	if errConn != nil {
 		log.Print("Could not create DB schema. Exiting ...", errConn)
 		os.Exit(1)
 	}
 
 	// check schema was created already
-	if exists, errExists := models.TableExists(ctx, dbConn, &models.UserData{}, "users", 5, e.Logger); errExists != nil {
+	if exists, errExists := models.TableExists(ctx, &models.UserData{}, "users", 5, e.Logger); errExists != nil {
 		e.Logger.Debug("table users does not exist:", errExists, exists)
 		// currently does not work. issue has been opened in orm lib
 	}
 
 	// create DB schema
-	if errSchema := createSchema(dbConn); errSchema != nil {
+	if errSchema := createSchema(commons.DB()); errSchema != nil {
 		log.Print("Could not create DB schema. Exiting ...", errSchema)
 		os.Exit(1)
 	}
 
 	// populate schema
-	if errPopul := populateSchema(ctx, e.NewContext(nil, nil), dbConn); errPopul != nil {
+	if errPopul := populateSchema(ctx, e.NewContext(nil, nil), commons.DB()); errPopul != nil {
 		log.Print("Could not populate DB schema. Exiting ...", errPopul)
 		os.Exit(1)
 	}
@@ -81,7 +72,7 @@ func main() {
 
 	handleInterrupt(e, commons.ShutdownGraceSeconds)
 	e.Logger.Info("closing DB")
-	dbConn.Close() // to switch to defer maybe
+	commons.DB().Close()
 }
 
 func handleInterrupt(s *echo.Echo, graceSeconds int) {

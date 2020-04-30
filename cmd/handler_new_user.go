@@ -48,7 +48,7 @@ func NewUser(c echo.Context) error {
 
 	// check db connection for debug level
 	if c.Logger().Level() == 1 {
-		errQuery := commons.CheckPgDB(c.Logger(), dbConn)
+		errQuery := commons.CheckPgDB(c.Logger())
 		c.Logger().Debug("errQuery:", errQuery)
 		if errQuery != nil {
 			return errQuery
@@ -56,7 +56,7 @@ func NewUser(c echo.Context) error {
 	}
 	c.Logger().Debugf("database is responding.")
 
-	user, errCo := models.NewUser(c, dbConn, u, false)
+	user, errCo := models.NewUser(c, u, false)
 	if errCo != nil {
 		c.Logger().Debug("errCo:", errCo)
 		e.TheError = errCo.Error()

@@ -24,7 +24,7 @@ func Test1CreateUser(t *testing.T) {
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
 	e.POST(commons.EndpointNewUser, NewUser)
-
+	e.Binder
 	if assert.Nil(t, commons.CheckPgDB(e.Logger, dbConn), "TEST - Could not connect to DB.") {
 		apitest.New().
 			Handler(e).

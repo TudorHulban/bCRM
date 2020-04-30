@@ -54,7 +54,7 @@ func initUsers(ctx context.Context, c echo.Context, db *pg.DB) error {
 	users = append(users, models.UserFormData{TeamID: 2, SecurityGroup: 1, LoginCODE: "JOHN", LoginPWD: "abcd"})
 
 	for _, v := range users {
-		u, errCo := models.NewUser(c, db, v, false)
+		u, errCo := models.NewUser(c, v, false)
 		if errCo != nil {
 			return errCo
 		}

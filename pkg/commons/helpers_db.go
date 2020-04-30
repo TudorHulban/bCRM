@@ -3,16 +3,15 @@ package commons
 import (
 	"errors"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo"
 )
 
-func CheckPgDB(log echo.Logger, db *pg.DB) error {
+func CheckPgDB(log echo.Logger) error {
 	log.Debugf("checking DB connectivity")
 
-	if db == nil {
+	if DB() == nil {
 		return errors.New("db pointer is nil")
 	}
-	_, errQuery := db.Exec("SELECT 1")
+	_, errQuery := DB().Exec("SELECT 1")
 	return errQuery
 }
