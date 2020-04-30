@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/gommon/log"
 
 	"github.com/steinfletcher/apitest"
+	_ "github.com/steinfletcher/apitest-jsonpath"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,7 +24,7 @@ func Test1CreateUser(t *testing.T) {
 	if assert.Nil(t, commons.CheckPgDB(e.Logger), "TEST - Could not connect to DB.") {
 		f := make(url.Values)
 		f.Set("teamid", "1")
-		f.Set("code", "JOANA")
+		f.Set("code", commons.UXNano())
 		f.Set("pass", "abcd")
 
 		w := httptest.NewRecorder()
@@ -33,7 +34,7 @@ func Test1CreateUser(t *testing.T) {
 		e.ServeHTTP(w, req)
 		resp := w.Result()
 
-		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	}
 }
 
@@ -48,10 +49,10 @@ func Test2CreateUser(t *testing.T) {
 			Method(http.MethodPost).
 			URL(commons.EndpointNewUser).
 			FormData("teamid", "1").
-			FormData("code", "LILI").
+			FormData("code", commons.UXNano()).
 			FormData("pass", "abcd").
 			Expect(t).
-			Status(http.StatusOK).
+			Status(http.StatusCreated).
 			End()
 	}
 }

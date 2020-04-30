@@ -97,10 +97,8 @@ func (u *User) Insert(ctx context.Context, timeoutSecs int) error {
 	}
 	u.UserData.PasswordHASH = hash
 
-	log.Print("here", ctx)
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
 	defer cancel()
-	log.Print("here")
 
 	u.log.Debugf("user data to insert: %v", u.UserData.UserFormData)
 

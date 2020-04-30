@@ -73,5 +73,5 @@ func NewUser(c echo.Context) error {
 		c.JSON(http.StatusInternalServerError, e)
 		return errInsert
 	}
-	return c.JSON(http.StatusOK, user.ID)
+	return c.String(http.StatusCreated, strconv.FormatInt(user.ID, 10))
 }
