@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"testing"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
@@ -23,10 +24,11 @@ func Test_User_Insert(t *testing.T) {
 	e.Logger.SetLevel(log.DEBUG)
 	ectx := e.NewContext(nil, nil)
 
-	f := UserFormData{LoginCODE: "xxx3", SecurityGroup: 1, LoginPWD: "abcd"}
-	user, errNew := NewUser(ectx, dbConn, f, false)
+	f := UserFormData{TeamID: 1, LoginCODE: "xxx3", SecurityGroup: 1, LoginPWD: "abcd"}
+	user, errNew := NewUser(ectx, f, false)
 	if assert.NoError(t, errNew) {
-		assert.NoError(t, user.Insert())
+		ctx := context.TODO()
+		assert.NoError(t, user.Insert(ctx, commons.CTXTimeOutSecs))
 	}
 }
 
@@ -44,10 +46,11 @@ func Test_User_SelectByID(t *testing.T) {
 	ectx := e.NewContext(nil, nil)
 
 	f := UserFormData{}
-	user, errNew := NewUser(ectx, dbConn, f, true)
+	user, errNew := NewUser(ectx, f, true)
 	assert.NoError(t, errNew)
 
-	u, err := user.GetbyID(1)
+	ctx := context.TODO()
+	u, err := user.GetbyID(ctx, commons.CTXTimeOutSecs, 1)
 	assert.NoError(t, err)
 	ectx.Logger().Debugf("user ID:%v", u.ID)
 }
