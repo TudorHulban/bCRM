@@ -6,6 +6,7 @@ import (
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 )
 
 // Needs cache for users. Not to go to db for user ID.
@@ -87,7 +88,6 @@ func NewUser(c echo.Context, f UserFormData, noValidation bool) (*User, error) {
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
 func (u *User) Insert(ctx context.Context, timeoutSecs int) error {
-
 	salt := GenerateRandomString(commons.SaltLength)
 	u.UserData.PasswordSALT = salt
 
@@ -97,14 +97,26 @@ func (u *User) Insert(ctx context.Context, timeoutSecs int) error {
 	}
 	u.UserData.PasswordHASH = hash
 
+	log.Print("here", ctx)
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
 	defer cancel()
+	log.Print("here")
 
 	u.log.Debugf("user data to insert: %v", u.UserData.UserFormData)
+
+	u.tools.log.SetLevel(log.DEBUG)
+	// check db connection. debug level = 1
+	if u.tools.log.Level() == 1 {
+		errQuery := commons.CheckPgDB(u.tools.log)
+		if errQuery != nil {
+			return errQuery
+		}
+		u.tools.log.Debugf("database is responding.")
+	}
+	u.tools.log.Info("log level: ", u.log.Level())
 
 	if errInsert := u.db.WithContext(ctx).Insert(&u.UserData); errInsert != nil {
 		return errInsert
 	}
-
 	return nil
 }

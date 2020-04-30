@@ -9,16 +9,12 @@ import (
 	"github.com/TudorHulban/bCRM/models"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
-var ctx context.Context
-
 func main() {
-	ctx = context.Background()
-
 	e := echo.New()
 	e.HideBanner = true
 	e.DisableHTTP2 = true

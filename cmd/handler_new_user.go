@@ -1,12 +1,13 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
 	"github.com/TudorHulban/bCRM/models"
 	"github.com/TudorHulban/bCRM/pkg/commons"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // NewUser Handler to create a new user. To be used by user management roles.
@@ -63,8 +64,9 @@ func NewUser(c echo.Context) error {
 		c.JSON(http.StatusServiceUnavailable, e)
 		return errCo
 	}
+	c.Logger().Debugf("user model instance created: %v", user)
 
-	errInsert := user.Insert(ctx, commons.CTXTimeOutSecs)
+	errInsert := user.Insert(context.TODO(), commons.CTXTimeOutSecs)
 	if errInsert != nil {
 		c.Logger().Debug("errInsert:", errInsert)
 		e.TheError = errInsert.Error()
