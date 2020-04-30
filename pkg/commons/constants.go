@@ -27,7 +27,7 @@ const LoginFormUser = "code"
 const LoginFormPass = "pass"
 
 // New User Form Field names
-const NewUserFormName = "name"
+const NewUserFormTeamID = "teamid"
 const NewUserFormUserCode = "code"
 const NewUserFormPass = "pass"
 const NewUserFormEmail = "email"

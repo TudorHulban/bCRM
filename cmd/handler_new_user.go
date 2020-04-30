@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/TudorHulban/bCRM/models"
 	"github.com/TudorHulban/bCRM/pkg/commons"
@@ -16,30 +17,29 @@ func NewUser(c echo.Context) error {
 	var e httpError
 	c.Logger().Debug("New User")
 
-	if len(c.FormValue(commons.NewUserFormName)) == 0 {
-		msg := commons.NewUserFormName + " information is not valid"
-		c.Logger().Debugf("%v", msg)
-		e.TheError = msg
+	if len(c.FormValue(commons.NewUserFormTeamID)) == 0 {
+		c.Logger().Debug("received ", commons.NewUserFormTeamID, " as: ", c.FormValue(commons.NewUserFormTeamID))
+		e.TheError = commons.NewUserFormTeamID + " information is not valid"
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
-
 	if len(c.FormValue(commons.NewUserFormUserCode)) == 0 {
+		c.Logger().Debug("received ", commons.NewUserFormUserCode, " as: ", c.FormValue(commons.NewUserFormUserCode))
 		e.TheError = commons.NewUserFormUserCode + " information is not valid"
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
-
 	if len(c.FormValue(commons.NewUserFormPass)) == 0 {
+		c.Logger().Debug("received ", commons.NewUserFormPass, " as: ", c.FormValue(commons.NewUserFormPass))
 		e.TheError = commons.NewUserFormPass + " information is not valid"
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
 
-	var co models.Contact
-	co.FirstName = c.FormValue(commons.NewUserFormName)
-	co.CompanyEmail = c.FormValue(commons.NewUserFormEmail)
-
-	c.Logger().Debug("Contact:", co)
-
 	var u models.UserFormData
+	id, errConv := strconv.Atoi(c.FormValue(commons.NewUserFormTeamID))
+	if errConv != nil {
+		e.TheError = commons.NewUserFormTeamID + " could not convert"
+		return c.JSON(http.StatusNotAcceptable, e)
+	}
+	u.TeamID = id
 	u.LoginCODE = c.FormValue(commons.NewUserFormUserCode)
 	u.LoginPWD = c.FormValue(commons.NewUserFormPass)
 	u.SecurityGroup = commons.SecuGrpUser
@@ -49,6 +49,7 @@ func NewUser(c echo.Context) error {
 	// check db connection for debug level
 	if c.Logger().Level() == 1 {
 		errQuery := commons.CheckPgDB(c.Logger(), dbConn)
+		c.Logger().Debug("errQuery:", errQuery)
 		if errQuery != nil {
 			return errQuery
 		}
@@ -59,13 +60,13 @@ func NewUser(c echo.Context) error {
 	if errCo != nil {
 		c.Logger().Debug("errCo:", errCo)
 		e.TheError = errCo.Error()
-		c.JSON(http.StatusInternalServerError, e)
+		c.JSON(http.StatusServiceUnavailable, e)
 		return errCo
 	}
 
 	errInsert := user.Insert(ctx, commons.CTXTimeOutSecs)
 	if errInsert != nil {
-		c.Logger().Debug("errAdd:", errInsert)
+		c.Logger().Debug("errInsert:", errInsert)
 		e.TheError = errInsert.Error()
 		c.JSON(http.StatusInternalServerError, e)
 		return errInsert
