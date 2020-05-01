@@ -44,6 +44,7 @@ func NewUser(c echo.Context) error {
 	u.LoginCODE = c.FormValue(commons.NewUserFormUserCode)
 	u.LoginPWD = c.FormValue(commons.NewUserFormPass)
 	u.SecurityGroup = commons.SecuGrpUser
+	u.AppGroup = 1
 
 	c.Logger().Debug("User:", u)
 

@@ -11,6 +11,7 @@ func createSchema(db *pg.DB) error {
 	tables = append(tables, interface{}(&models.TeamFormData{}))
 	tables = append(tables, interface{}(&models.GroupFormData{}))
 	tables = append(tables, interface{}(&models.UserData{}))
+	tables = append(tables, interface{}(&models.TeamMembersData{}))
 
 	return newSchema(db, tables)
 }

@@ -28,6 +28,7 @@ func (u *User) getTeams(ctx context.Context, timeoutSecs int, userID int64) ([]i
 	if errCo != nil {
 		return nil, errCo
 	}
+	return t.getIDsforUserID(ctx, timeoutSecs, userID)
 }
 
 // GetbyID Method based on user ID and requester ID fetches full user info.

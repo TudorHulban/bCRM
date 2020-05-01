@@ -31,7 +31,7 @@ const LoginFormPass = "pass"
 const NewUserFormTeamID = "teamid"
 const NewUserFormUserCode = "code"
 const NewUserFormPass = "pass"
-const NewUserFormEmail = "email"
+const NewUserFormGroupID = "groupid"
 
 // New User Creation
 const SaltLength = 8

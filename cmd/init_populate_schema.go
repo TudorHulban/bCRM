@@ -23,6 +23,7 @@ func initTeams(ctx context.Context, c echo.Context, db *pg.DB) error {
 		}
 		errInsert := t.Insert(ctx, commons.CTXTimeOutSecs)
 		if errInsert != nil {
+			c.Logger().Debugf("errInsert: %v", errInsert)
 			return errInsert
 		}
 	}
@@ -42,6 +43,7 @@ func initGroups(ctx context.Context, c echo.Context, db *pg.DB) error {
 		}
 		errInsert := g.Insert(ctx, commons.CTXTimeOutSecs)
 		if errInsert != nil {
+			c.Logger().Debugf("errInsert: %v", errInsert)
 			return errInsert
 		}
 	}
@@ -50,8 +52,8 @@ func initGroups(ctx context.Context, c echo.Context, db *pg.DB) error {
 
 func initUsers(ctx context.Context, c echo.Context, db *pg.DB) error {
 	users := []models.UserFormData{}
-	users = append(users, models.UserFormData{TeamID: 1, SecurityGroup: 4, LoginCODE: "ADMIN", LoginPWD: "1234"})
-	users = append(users, models.UserFormData{TeamID: 2, SecurityGroup: 1, LoginCODE: "JOHN", LoginPWD: "abcd"})
+	users = append(users, models.UserFormData{TeamID: 1, SecurityGroup: 4, LoginCODE: "ADMIN", LoginPWD: "1234", AppGroup: 1})
+	users = append(users, models.UserFormData{TeamID: 2, SecurityGroup: 1, LoginCODE: "JOHN", LoginPWD: "abcd", AppGroup: 2})
 
 	for _, v := range users {
 		u, errCo := models.NewUser(c, v, false)
@@ -60,6 +62,7 @@ func initUsers(ctx context.Context, c echo.Context, db *pg.DB) error {
 		}
 		errInsert := u.Insert(ctx, commons.CTXTimeOutSecs)
 		if errInsert != nil {
+			c.Logger().Debugf("errInsert: %v", errInsert)
 			return errInsert
 		}
 	}

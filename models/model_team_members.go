@@ -17,8 +17,8 @@ type TeamMembersData struct {
 	UserID    int64 `validate:"required" pg:",notnull,unique"`
 	Joined    int64 `pg:",notnull"` // unix time seconds when user joined team
 	JoinedBy  int64 `pg:",notnull"` // user ID that added to team
-	Left      int64 `pg:"-"`        // unix time seconds when user left team
-	LeftBy    int64 `pg:"-"`        // user ID that eliberated user from team
+	Left      int64 `pg:""`         // unix time seconds when user left team
+	LeftBy    int64 `pg:""`         // user ID that eliberated user from team
 }
 
 type TeamMembers struct {
@@ -54,4 +54,20 @@ func (t *TeamMembers) insert(ctx context.Context, timeoutSecs int) error {
 		return errInsert
 	}
 	return nil
+}
+
+func (t *TeamMembers) getIDsforUserID(ctx context.Context, timeoutSecs int, userID int64) ([]int64, error) {
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
+	defer cancel()
+
+	var teams []TeamMembersData
+	if errSelect := t.db.WithContext(ctx).Model(&teams).Where("userid = ?", userID).Select(); errSelect != nil {
+		return nil, errSelect
+	}
+
+	var result []int64
+	for _, v := range teams {
+		result = append(result, v.TeamID)
+	}
+	return result, nil
 }
