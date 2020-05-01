@@ -55,7 +55,7 @@ func main() {
 	// Routes
 	// Public routes
 	e.GET(commons.EndpointLive, Live)
-	//e.POST(EndpointLogin, LoginWithPassword)
+	e.POST(commons.EndpointNewTeam, NewTeam)
 	e.POST(commons.EndpointNewUser, NewUser)
 
 	// private routes

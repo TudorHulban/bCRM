@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"github.com/TudorHulban/bCRM/models"
 	"github.com/TudorHulban/bCRM/pkg/commons"
@@ -23,29 +22,23 @@ func NewTeam(c echo.Context) error {
 		e.TheError = commons.NewTeamFormCODE + " information is not valid"
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
-	if len(c.FormValue(commons.NewUserFormUserCode)) == 0 {
-		c.Logger().Debug("received ", commons.NewUserFormUserCode, " as: ", c.FormValue(commons.NewUserFormUserCode))
-		e.TheError = commons.NewUserFormUserCode + " information is not valid"
+	if len(c.FormValue(commons.NewTeamFormDescription)) == 0 {
+		c.Logger().Debug("received ", commons.NewTeamFormDescription, " as: ", c.FormValue(commons.NewTeamFormDescription))
+		e.TheError = commons.NewTeamFormDescription + " information is not valid"
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
-	if len(c.FormValue(commons.NewUserFormPass)) == 0 {
-		c.Logger().Debug("received ", commons.NewUserFormPass, " as: ", c.FormValue(commons.NewUserFormPass))
-		e.TheError = commons.NewUserFormPass + " information is not valid"
+	if len(c.FormValue(commons.NewTeamFormName)) == 0 {
+		c.Logger().Debug("received ", commons.NewTeamFormName, " as: ", c.FormValue(commons.NewTeamFormName))
+		e.TheError = commons.NewTeamFormName + " information is not valid"
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
 
-	var u models.UserFormData
-	id, errConv := strconv.Atoi(c.FormValue(commons.NewUserFormTeamID))
-	if errConv != nil {
-		e.TheError = commons.NewUserFormTeamID + " could not convert"
-		return c.JSON(http.StatusNotAcceptable, e)
-	}
-	u.TeamID = id
-	u.LoginCODE = c.FormValue(commons.NewUserFormUserCode)
-	u.LoginPWD = c.FormValue(commons.NewUserFormPass)
-	u.SecurityGroup = commons.SecuGrpUser
+	var m models.TeamFormData
+	m.Name = c.FormValue(commons.NewTeamFormName)
+	m.Description = c.FormValue(commons.NewTeamFormDescription)
+	m.CODE = c.FormValue(commons.NewTeamFormCODE)
 
-	c.Logger().Debug("User:", u)
+	c.Logger().Debug("Team:", m)
 
 	// check db connection for debug level
 	if c.Logger().Level() == 1 {
@@ -57,16 +50,16 @@ func NewTeam(c echo.Context) error {
 		c.Logger().Debugf("database is responding.")
 	}
 
-	user, errCo := models.NewUser(c, u, false)
+	model, errCo := models.NewTeam(c, m, false)
 	if errCo != nil {
 		c.Logger().Debug("errCo:", errCo)
 		e.TheError = errCo.Error()
 		c.JSON(http.StatusServiceUnavailable, e)
 		return errCo
 	}
-	c.Logger().Debugf("user model instance created: %v", user)
+	c.Logger().Debugf("model instance created: %v", model)
 
-	if errInsert := user.Insert(context.TODO(), commons.CTXTimeOutSecs); errInsert != nil {
+	if errInsert := model.Insert(context.TODO(), commons.CTXTimeOutSecs); errInsert != nil {
 		c.Logger().Debug("errInsert:", errInsert)
 		e.TheError = errInsert.Error()
 		c.JSON(http.StatusInternalServerError, e)
@@ -76,7 +69,7 @@ func NewTeam(c echo.Context) error {
 	result := struct {
 		ID int64 `json:ID`
 	}{
-		ID: user.ID,
+		ID: model.ID,
 	}
 	return c.JSON(http.StatusCreated, result)
 }

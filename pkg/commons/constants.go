@@ -16,6 +16,7 @@ const ShutdownGraceSeconds = 3
 // HTTP Endpoints
 const EndpointLive = "/live"
 const EndpointNewUser = "/newuser"
+const EndpointNewTeam = "/newteam"
 const EndpointLogin = "/login"
 
 // Token generation

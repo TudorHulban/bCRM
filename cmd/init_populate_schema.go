@@ -17,7 +17,7 @@ func initTeams(ctx context.Context, c echo.Context, db *pg.DB) error {
 	teams = append(teams, models.TeamFormData{CODE: "YELLOW", Name: "Yellow Team", Description: "Yellow Team"})
 
 	for _, v := range teams {
-		t, errCo := models.NewTeam(c, db, v, false)
+		t, errCo := models.NewTeam(c, v, false)
 		if errCo != nil {
 			return errCo
 		}

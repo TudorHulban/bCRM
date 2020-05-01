@@ -23,9 +23,9 @@ func Test1CreateUser(t *testing.T) {
 
 	if assert.Nil(t, commons.CheckPgDB(e.Logger), "TEST - Could not connect to DB.") {
 		f := make(url.Values)
-		f.Set("teamid", "1")
-		f.Set("code", commons.UXNano())
-		f.Set("pass", "abcd")
+		f.Set(commons.NewUserFormTeamID, "1")
+		f.Set(commons.NewUserFormUserCode, commons.UXNano())
+		f.Set(commons.NewUserFormPass, "abcd")
 
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest(http.MethodPost, commons.EndpointNewUser, strings.NewReader(f.Encode()))
@@ -48,9 +48,9 @@ func Test2CreateUser(t *testing.T) {
 			Handler(e).
 			Method(http.MethodPost).
 			URL(commons.EndpointNewUser).
-			FormData("teamid", "1").
-			FormData("code", commons.UXNano()).
-			FormData("pass", "abcd").
+			FormData(commons.NewUserFormTeamID, "1").
+			FormData(commons.NewUserFormUserCode, commons.UXNano()).
+			FormData(commons.NewUserFormPass, "abcd").
 			Expect(t).
 			Status(http.StatusCreated).
 			Assert(jsonpath.Matches(`$.ID`, `^\d+$`)).

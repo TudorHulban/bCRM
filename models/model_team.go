@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
-	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
@@ -27,7 +26,7 @@ type Team struct {
 }
 
 // NewTeam Constructor for when interacting with the model.
-func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Team, error) {
+func NewTeam(c echo.Context, f TeamFormData, noValidation bool) (*Team, error) {
 	// validate data
 	if !noValidation {
 		if errValid := isValidStruct(f, c.Logger()); errValid != nil {
@@ -47,7 +46,7 @@ func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Tea
 		TeamFormData: f,
 		tools: tools{
 			log: c.Logger(),
-			db:  db,
+			db:  commons.DB(),
 		},
 	}
 	result.tools.log.SetLevel(log.DEBUG)
