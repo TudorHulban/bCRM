@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
@@ -17,6 +18,16 @@ func (u *User) getbyID(ctx context.Context, timeoutSecs int, userID int64) (User
 
 	u.log.Debug("fetched:", result)
 	return result, errSelect
+}
+
+func (u *User) getTeams(ctx context.Context, timeoutSecs int, userID int64) ([]int64, error) {
+	data := TeamMembersData{
+		UserID: userID,
+	}
+	t, errCo := newTeamMember(u.tools.log, data, true)
+	if errCo != nil {
+		return nil, errCo
+	}
 }
 
 // GetbyID Method based on user ID and requester ID fetches full user info.
@@ -43,7 +54,7 @@ func (u *User) GetbyID(ctx context.Context, timeoutSecs int, userID, requesterID
 	}
 	// pass - if requester is team admin and in the same team. to consider the user could be in more than one team.
 
-	return result, errSelect
+	return UserData{}, errors.New("data could not be provided due to security issues")
 }
 
 /*
