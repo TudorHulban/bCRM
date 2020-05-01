@@ -10,17 +10,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// NewUser Handler to create a new user. To be used by user management roles.
-// Information needed for creating a user is:
-// Name, UserCode, Password
+// NewTeam Handler to create a new team. To be used by user management roles.
+// Information needed for creating a team is:
+// Name, description, code
 // RAW testing: curl -d "teamid=1&code=1234&pass=abcd" -X POST http://localhost:8001/newuser
-func NewUser(c echo.Context) error {
+func NewTeam(c echo.Context) error {
 	var e httpError
-	c.Logger().Debug("New User")
+	c.Logger().Debug("New Team")
 
-	if len(c.FormValue(commons.NewUserFormTeamID)) == 0 {
-		c.Logger().Debug("received ", commons.NewUserFormTeamID, " as: ", c.FormValue(commons.NewUserFormTeamID))
-		e.TheError = commons.NewUserFormTeamID + " information is not valid"
+	if len(c.FormValue(commons.NewTeamFormCODE)) == 0 {
+		c.Logger().Debug("received ", commons.NewTeamFormCODE, " as: ", c.FormValue(commons.NewTeamFormCODE))
+		e.TheError = commons.NewTeamFormCODE + " information is not valid"
 		return c.JSON(http.StatusNotAcceptable, e)
 	}
 	if len(c.FormValue(commons.NewUserFormUserCode)) == 0 {

@@ -26,7 +26,7 @@ const TokenExpirationSeconds = 3600
 const LoginFormUser = "code"
 const LoginFormPass = "pass"
 
-// New User Form Field names
+// New User Form fieldnames
 const NewUserFormTeamID = "teamid"
 const NewUserFormUserCode = "code"
 const NewUserFormPass = "pass"
@@ -34,6 +34,11 @@ const NewUserFormEmail = "email"
 
 // New User Creation
 const SaltLength = 8
+
+// New Team Form fieldnames
+const NewTeamFormName = "name"
+const NewTeamFormDescription = "desc"
+const NewTeamFormCODE = "code"
 
 // User Security Groups
 const SecuGrpAdmin = -1

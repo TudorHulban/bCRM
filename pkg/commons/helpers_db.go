@@ -7,7 +7,7 @@ import (
 )
 
 func CheckPgDB(log echo.Logger) error {
-	log.Debugf("checking DB connectivity")
+	//log.Debugf("checking DB connectivity")
 
 	if DB() == nil {
 		return errors.New("db pointer is nil")

@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/gommon/log"
 
 	"github.com/steinfletcher/apitest"
-	_ "github.com/steinfletcher/apitest-jsonpath"
+	"github.com/steinfletcher/apitest-jsonpath"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -53,6 +53,7 @@ func Test2CreateUser(t *testing.T) {
 			FormData("pass", "abcd").
 			Expect(t).
 			Status(http.StatusCreated).
+			Assert(jsonpath.Matches(`$.ID`, `^\d+$`)).
 			End()
 	}
 }

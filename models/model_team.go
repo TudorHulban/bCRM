@@ -7,6 +7,7 @@ import (
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/go-pg/pg/v9"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 // Team Structure holding team fields. Every application user belongs to a team.
@@ -29,28 +30,28 @@ type Team struct {
 func NewTeam(c echo.Context, db *pg.DB, f TeamFormData, noValidation bool) (*Team, error) {
 	// validate data
 	if !noValidation {
-		errValid := isValidStruct(f, c.Logger())
-		if errValid != nil {
+		if errValid := isValidStruct(f, c.Logger()); errValid != nil {
 			return nil, errValid
 		}
 	}
 
 	// check db connection. debug level = 1
 	if c.Logger().Level() == 1 {
-		errQuery := commons.CheckPgDB(c.Logger())
-		if errQuery != nil {
+		if errQuery := commons.CheckPgDB(c.Logger()); errQuery != nil {
 			return nil, errQuery
 		}
+		c.Logger().Debugf("database is responding.")
 	}
-	c.Logger().Debugf("database is responding.")
 
-	return &Team{
+	result := Team{
 		TeamFormData: f,
 		tools: tools{
 			log: c.Logger(),
 			db:  db,
 		},
-	}, nil
+	}
+	result.tools.log.SetLevel(log.DEBUG)
+	return &result, nil
 }
 
 func (t *Team) Insert(ctx context.Context, timeoutSecs int) error {

@@ -62,28 +62,28 @@ var userRights map[int]string
 func NewUser(c echo.Context, f UserFormData, noValidation bool) (*User, error) {
 	// validate data
 	if !noValidation {
-		errValid := isValidStruct(f, c.Logger())
-		if errValid != nil {
+		if errValid := isValidStruct(f, c.Logger()); errValid != nil {
 			return nil, errValid
 		}
 	}
 
 	// check db connection. debug level = 1
 	if c.Logger().Level() == 1 {
-		errQuery := commons.CheckPgDB(c.Logger())
-		if errQuery != nil {
+		if errQuery := commons.CheckPgDB(c.Logger()); errQuery != nil {
 			return nil, errQuery
 		}
 		c.Logger().Debugf("database is responding.")
 	}
 
-	return &User{
+	result := User{
 		UserData: UserData{UserFormData: f},
 		tools: tools{
 			log: c.Logger(),
 			db:  commons.DB(),
 		},
-	}, nil
+	}
+	result.tools.log.SetLevel(log.DEBUG)
+	return &result, nil
 }
 
 // CreateUser Saves the user variable in the Pg layer. Pointer needed as ID would be read from RDBMS insert.
@@ -102,16 +102,13 @@ func (u *User) Insert(ctx context.Context, timeoutSecs int) error {
 
 	u.log.Debugf("user data to insert: %v", u.UserData.UserFormData)
 
-	u.tools.log.SetLevel(log.DEBUG)
 	// check db connection. debug level = 1
 	if u.tools.log.Level() == 1 {
-		errQuery := commons.CheckPgDB(u.tools.log)
-		if errQuery != nil {
+		if errQuery := commons.CheckPgDB(u.tools.log); errQuery != nil {
 			return errQuery
 		}
 		u.tools.log.Debugf("database is responding.")
 	}
-	u.tools.log.Info("log level: ", u.log.Level())
 
 	if errInsert := u.db.WithContext(ctx).Insert(&u.UserData); errInsert != nil {
 		return errInsert
