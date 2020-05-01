@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test1CreateUser(t *testing.T) {
+func Test1_CreateUser(t *testing.T) {
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
 	e.POST(commons.EndpointNewUser, NewUser)
@@ -38,7 +38,7 @@ func Test1CreateUser(t *testing.T) {
 	}
 }
 
-func Test2CreateUser(t *testing.T) {
+func Test2_CreateUser(t *testing.T) {
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
 	e.POST(commons.EndpointNewUser, NewUser)
@@ -49,7 +49,7 @@ func Test2CreateUser(t *testing.T) {
 			Method(http.MethodPost).
 			URL(commons.EndpointNewUser).
 			FormData(commons.NewUserFormTeamID, "1").
-			FormData(commons.NewUserFormUserCode, commons.UXNano()).
+			FormData(commons.NewUserFormUserCode, commons.UXSecs()).
 			FormData(commons.NewUserFormPass, "abcd").
 			Expect(t).
 			Status(http.StatusCreated).

@@ -42,5 +42,7 @@ const NewTeamFormDescription = "desc"
 const NewTeamFormCODE = "code"
 
 // User Security Groups
-const SecuGrpAdmin = -1
+const SecuAppAdmin = 4
+const SecuGroupAdmin = 3
+const SecuTeamAdmin = 2
 const SecuGrpUser = 1

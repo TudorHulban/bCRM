@@ -9,7 +9,14 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-// Needs cache for users. Not to go to db for user ID.
+/*
+A. Needs cache for users. Not to go to db for user ID.
+B. Each request should provide a requested ID.
+Security should check:
+a. for create operations a user cannot create users with security group above his
+b. for retrieve operations:
+under review
+*/
 
 // Contact Is used when defining a app user. The app user could have more than one contact.
 type Contact struct {
@@ -28,8 +35,9 @@ type Contact struct {
 
 // UserFormData Structure holds information necessary for creating a user and coming from frontend.
 type UserFormData struct {
-	TeamID        int    `validate:"required"`               // triggers an entry in teams data table.
+	TeamID        int    `pg:",notnull" validate:"required"` // triggers an entry in teams data table. user can be in multiple teams
 	SecurityGroup int    `pg:",notnull" validate:"required"` // as per userRights, userRights = map[int]string{1: "admin", 2: "user", 3: "external user"}
+	AppGroup      int    `pg:",notnull" validate:"required"` // application group, only app admin could select group
 	LoginCODE     string `validate:"required" json:"code" pg:",notnull,unique" `
 	LoginPWD      string `validate:"required" json:"-" pg:",notnull ` // should not be sent in JSON, exported for ORM, to be taken out as hash is enough
 }

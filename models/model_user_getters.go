@@ -3,10 +3,12 @@ package models
 import (
 	"context"
 	"time"
+
+	"github.com/TudorHulban/bCRM/pkg/commons"
 )
 
-// GetbyID Method based on user ID fetches full user info.
-func (u *User) GetbyID(ctx context.Context, timeoutSecs int, userID int64) (UserData, error) {
+// getbyID Method based on user ID fetches full user info.
+func (u *User) getbyID(ctx context.Context, timeoutSecs int, userID int64) (UserData, error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
 	defer cancel()
 
@@ -14,6 +16,33 @@ func (u *User) GetbyID(ctx context.Context, timeoutSecs int, userID int64) (User
 	errSelect := u.db.WithContext(ctx).Model(&result).Where("id = ?", userID).Select()
 
 	u.log.Debug("fetched:", result)
+	return result, errSelect
+}
+
+// GetbyID Method based on user ID and requester ID fetches full user info.
+func (u *User) GetbyID(ctx context.Context, timeoutSecs int, userID, requesterID int64) (UserData, error) {
+	// get requester info to understand if info should be provided
+	requester, errReq := u.getbyID(ctx, timeoutSecs, requesterID)
+	if errReq != nil {
+		return UserData{}, errReq
+	}
+
+	user, errUser := u.getbyID(ctx, timeoutSecs, userID)
+	if errUser != nil {
+		return UserData{}, errUser
+	}
+
+	// check security
+	// pass - if requester is app admin
+	if requester.SecurityGroup == commons.SecuAppAdmin {
+		return user, nil
+	}
+	// pass - if requester is group admin and in the same group
+	if requester.SecurityGroup == commons.SecuGroupAdmin && requester.AppGroup == user.AppGroup {
+		return user, nil
+	}
+	// pass - if requester is team admin and in the same team. to consider the user could be in more than one team.
+
 	return result, errSelect
 }
 

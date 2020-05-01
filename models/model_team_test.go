@@ -23,7 +23,7 @@ func Test_Team_Insert(t *testing.T) {
 	e.Logger.SetLevel(log.DEBUG)
 	ectx := e.NewContext(nil, nil)
 
-	f := TeamFormData{CODE: "BLUE", Name: "Blue Team", Description: "Blue Team"}
+	f := TeamFormData{CODE: "BLUE" + commons.UXSecs(), Name: "Blue Team" + commons.UXSecs(), Description: "Blue Team"}
 	team, errNew := NewTeam(ectx, dbConn, f, false)
 	if assert.NoError(t, errNew) {
 		assert.NoError(t, team.Insert())
