@@ -73,11 +73,5 @@ func NewUser(c echo.Context) error {
 		c.JSON(http.StatusInternalServerError, e)
 		return errInsert
 	}
-
-	result := struct {
-		ID int64 `json:ID`
-	}{
-		ID: user.ID,
-	}
-	return c.JSON(http.StatusCreated, result)
+	return c.JSON(http.StatusCreated, echo.Map{"ID": user.ID})
 }

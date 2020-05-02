@@ -7,8 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func checkPasswordHash(pPassword, pSalt, pHash string) bool {
-	errCompare := bcrypt.CompareHashAndPassword([]byte(pHash), []byte(pPassword+pSalt))
+func checkPasswordHash(pass, salt, hash string) bool {
+	errCompare := bcrypt.CompareHashAndPassword([]byte(hash), []byte(pass+salt))
 	return errCompare == nil
 }
 

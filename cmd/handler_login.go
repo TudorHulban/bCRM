@@ -11,9 +11,9 @@ import (
 
 // LoginWithPassword is handler to perform user and password authentication against persisted data.
 func LoginWithPassword(c echo.Context) error {
-	var e httpError
 	c.Logger().Debug("Login w Password")
 
+	var e httpError
 	if len(c.FormValue(commons.LoginFormUserCode)) == 0 {
 		c.Logger().Debug("received ", commons.LoginFormUserCode, " as: ", c.FormValue(commons.LoginFormUserCode))
 		e.TheError = commons.LoginFormUserCode + " information is not valid"
@@ -30,6 +30,7 @@ func LoginWithPassword(c echo.Context) error {
 	var u models.UserFormData
 	u.LoginCODE = c.FormValue(commons.LoginFormUserCode)
 	u.LoginPWD = c.FormValue(commons.LoginFormPass)
+	c.Logger().Debug("form data:", u)
 
 	// error is user info not found, we are not hiding this with 404
 	m, errGetUser := models.NewUser(c, u, true)
@@ -38,11 +39,11 @@ func LoginWithPassword(c echo.Context) error {
 		e.TheError = errGetUser.Error()
 		return c.JSON(http.StatusNotFound, e)
 	}
-	log.Debug("fetched user:", user)
 
 	// at this stage user info is found, to check password. error is password does not match not found, we are not hiding this with 404
-	if !checkPasswordHash(c.FormValue(u.LoginPWD), user.PasswordSALT, user.PasswordHASH) {
+	if !checkPasswordHash(u.LoginPWD, user.PasswordSALT, user.PasswordHASH) {
 		e.TheError = "bad credentials"
+		c.Logger().Debug(e.TheError, ": ", u.LoginPWD)
 		return c.JSON(http.StatusForbidden, e)
 	}
 
@@ -53,5 +54,5 @@ func LoginWithPassword(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, e)
 	}
 	log.Debug(echo.Map{"token": t})
-	return c.JSON(http.StatusOK, echo.Map{"token": t, "id": user.ID})
+	return c.JSON(http.StatusOK, echo.Map{"token": t, "ID": user.ID})
 }
