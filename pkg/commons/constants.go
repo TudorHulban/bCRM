@@ -24,7 +24,7 @@ const TokenSecret = "secret"
 const TokenExpirationSeconds = 3600
 
 // Login Form Field names
-const LoginFormUser = "code"
+const LoginFormUserCode = "code"
 const LoginFormPass = "pass"
 
 // New User Form fieldnames

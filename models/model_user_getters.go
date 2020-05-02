@@ -58,6 +58,14 @@ func (u *User) GetbyID(ctx context.Context, timeoutSecs int, userID, requesterID
 	return UserData{}, errors.New("data could not be provided due to security issues")
 }
 
+// GetUserByCodeUnauthorized retrieves user given code.
+func (u *User) GetUserByCodeUnauthorized() (UserData, error) {
+	if errSelect := u.tools.db.Model(&u.UserData).Where("login_code = ?", u.LoginCODE).Select(); errSelect != nil {
+		return UserData{}, errSelect
+	}
+	return u.UserData, nil
+}
+
 /*
 // GetUserByPK Method fetches user info from Pg and returns a user and error.
 func (u *User) GetUserByID(userID int64) (*User, error) {
@@ -111,16 +119,7 @@ func (u *Userpg) GetUserByCode(pRequesterUserID int64, pCODE string) (Userpg, er
 	return result, getContactInfo(b, &result)
 }
 
-// GetUserByCodeUnauthorized retrieves user given code.
-func (u *Userpg) GetUserByCodeUnauthorized(pCODE string) (Userpg, error) {
-	result := User{LoginCODE: pCODE}
-	errSelect := b.DBConn.Model(&result).Where("login_code = ?", pCODE).Select()
 
-	if errSelect != nil {
-		return result, errSelect
-	}
-	return result, getContactInfo(b, &result)
-}
 
 // GetAllUsers retrieves user as per requester security rights.
 func (u *Userpg) GetAllUsers(pRequesterUserID int64, pHowMany int) ([]Userpg, error) {
