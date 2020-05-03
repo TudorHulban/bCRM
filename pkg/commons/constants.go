@@ -21,7 +21,7 @@ const EndpointLogin = "/login"
 
 // Token generation
 const TokenSecret = "secret2020"
-const SessionIDExpirationSeconds = 5
+const SessionIDExpirationSeconds = 2
 const SessionIDLength = 12
 
 // Login Form Field names

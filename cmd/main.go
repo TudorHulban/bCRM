@@ -60,6 +60,7 @@ func main() {
 
 	// create session ID cache
 	theCache = cache.New(e.Logger)
+	defer theCache.Close()
 
 	// Routes
 	// Public routes
