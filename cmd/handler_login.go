@@ -48,9 +48,13 @@ func LoginWithPassword(c echo.Context) error {
 	}
 
 	// user is authenticated, no authorization for now
-	sessionID := randomString(commons.SessionIDLength)
-	// store session ID in cache for future requests
-	theCache.SetTTL(user.LoginCODE, sessionID, commons.SessionIDExpirationSeconds)
-
-	return c.JSON(http.StatusOK, echo.Map{"sessionID": sessionID, "ID": user.ID})
+	// check if we already have a session ID
+	sessionIDBytes, errGetSession := theCache.Get(user.LoginCODE)
+	if errGetSession != nil {
+		sessionID := randomString(commons.SessionIDLength)
+		// store session ID in cache for future requests
+		theCache.SetTTL(user.LoginCODE, sessionID, commons.SessionIDExpirationSeconds)
+		return c.JSON(http.StatusOK, echo.Map{"sessionID": sessionID, "ID": user.ID})
+	}
+	return c.JSON(http.StatusOK, echo.Map{"sessionID": string(sessionIDBytes), "ID": user.ID})
 }
