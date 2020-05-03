@@ -6,6 +6,7 @@ require (
 	github.com/PaesslerAG/gval v1.0.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgraph-io/badger/v2 v2.0.3
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-pg/pg v8.0.6+incompatible
 	github.com/go-pg/pg/v9 v9.1.6

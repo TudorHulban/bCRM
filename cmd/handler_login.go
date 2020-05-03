@@ -6,7 +6,6 @@ import (
 	"github.com/TudorHulban/bCRM/models"
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 // LoginWithPassword is handler to perform user and password authentication against persisted data.
@@ -49,11 +48,9 @@ func LoginWithPassword(c echo.Context) error {
 	}
 
 	// user is authenticated, no authorization for now
-	t, errJWT := createJWT(commons.TokenExpirationSeconds)
-	if errJWT != nil {
-		e.TheError = errJWT.Error()
-		return c.JSON(http.StatusInternalServerError, e)
-	}
-	log.Debug(echo.Map{"token": t})
-	return c.JSON(http.StatusOK, echo.Map{"token": t, "ID": user.ID})
+	sessionID := randomString(commons.SessionIDLength)
+	// store session ID in cache for future requests
+	getSessionIDCache().SetTTL(user.LoginCODE, sessionID, commons.SessionIDExpirationSeconds)
+
+	return c.JSON(http.StatusOK, echo.Map{"sessionID": sessionID, "ID": user.ID})
 }

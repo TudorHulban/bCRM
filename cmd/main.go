@@ -64,6 +64,9 @@ func main() {
 	// private routes
 	//r := e.Group("/r")
 
+	// create cache
+	getSessionIDCache(e.Logger)
+
 	// Start server
 	go func() {
 		if err := e.Start(commons.ListeningSocket); err != nil {
