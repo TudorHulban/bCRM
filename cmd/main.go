@@ -6,6 +6,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/TudorHulban/bCRM/pkg/cache"
+
 	"github.com/TudorHulban/bCRM/models"
 
 	"github.com/TudorHulban/bCRM/pkg/commons"
@@ -13,6 +15,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
+
+var theCache *cache.Cache
 
 func main() {
 	ctx := context.Background()
@@ -54,6 +58,9 @@ func main() {
 		}
 	}
 
+	// create session ID cache
+	theCache = cache.New(e.Logger)
+
 	// Routes
 	// Public routes
 	e.GET(commons.EndpointLive, Live)
@@ -63,9 +70,6 @@ func main() {
 
 	// private routes
 	//r := e.Group("/r")
-
-	// create cache
-	getSessionIDCache(e.Logger)
 
 	// Start server
 	go func() {

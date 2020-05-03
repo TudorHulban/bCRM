@@ -15,8 +15,7 @@ type Cache struct {
 
 // New Constructor for in memory cache.
 func New(log echo.Logger) *Cache {
-	options := badger.DefaultOptions("").WithInMemory(true)
-	result, errOpen := badger.Open(options)
+	result, errOpen := badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	if errOpen != nil {
 		return nil
 	}

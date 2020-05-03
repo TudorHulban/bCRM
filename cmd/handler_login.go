@@ -50,7 +50,7 @@ func LoginWithPassword(c echo.Context) error {
 	// user is authenticated, no authorization for now
 	sessionID := randomString(commons.SessionIDLength)
 	// store session ID in cache for future requests
-	getSessionIDCache().SetTTL(user.LoginCODE, sessionID, commons.SessionIDExpirationSeconds)
+	theCache.SetTTL(user.LoginCODE, sessionID, commons.SessionIDExpirationSeconds)
 
 	return c.JSON(http.StatusOK, echo.Map{"sessionID": sessionID, "ID": user.ID})
 }

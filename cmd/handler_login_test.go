@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/TudorHulban/bCRM/pkg/cache"
+
 	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
@@ -18,6 +20,9 @@ func Test1_Login(t *testing.T) {
 	e.Logger.SetLevel(log.DEBUG)
 	e.POST(commons.EndpointLogin, LoginWithPassword)
 
+	// create cache
+	theCache = cache.New(e.Logger)
+
 	if assert.Nil(t, commons.CheckPgDB(e.Logger), "TEST - Could not connect to DB.") {
 		apitest.New().
 			Handler(e).
@@ -28,7 +33,7 @@ func Test1_Login(t *testing.T) {
 			Expect(t).
 			Status(http.StatusOK).
 			Assert(jsonpath.Matches(`$.ID`, `^\d+$`)).
-			Assert(jsonpath.Present("$.token")). // https://play.golang.org/p/chl9Y9J8QVk
+			Assert(jsonpath.Present("$.sessionID")). // https://play.golang.org/p/chl9Y9J8QVk
 			End()
 	}
 }
