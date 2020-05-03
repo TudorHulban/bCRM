@@ -20,7 +20,7 @@ const EndpointNewTeam = "/newteam"
 const EndpointLogin = "/login"
 
 // Token generation
-const TokenSecret = "secret"
+const TokenSecret = "secret2020"
 const TokenExpirationSeconds = 3600
 
 // Login Form Field names

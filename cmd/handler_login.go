@@ -10,6 +10,7 @@ import (
 )
 
 // LoginWithPassword is handler to perform user and password authentication against persisted data.
+// RAW testing: curl -d "code=ADMIN&pass=1234" -X POST http://localhost:8001/login
 func LoginWithPassword(c echo.Context) error {
 	c.Logger().Debug("Login w Password")
 

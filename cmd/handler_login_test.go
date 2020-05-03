@@ -28,7 +28,7 @@ func Test1_Login(t *testing.T) {
 			Expect(t).
 			Status(http.StatusOK).
 			Assert(jsonpath.Matches(`$.ID`, `^\d+$`)).
-			Assert(jsonpath.Matches(`$.token`, `^\[a-zA-Z0-9]+$`)).
+			Assert(jsonpath.Present("$.token")). // https://play.golang.org/p/chl9Y9J8QVk
 			End()
 	}
 }

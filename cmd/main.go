@@ -47,9 +47,11 @@ func main() {
 	}
 
 	// populate schema
-	if errPopul := populateSchema(ctx, e.NewContext(nil, nil), commons.DB()); errPopul != nil {
-		log.Print("Could not populate DB schema. Exiting ...", errPopul)
-		os.Exit(1)
+	if 1 == 2 {
+		if errPopul := populateSchema(ctx, e.NewContext(nil, nil), commons.DB()); errPopul != nil {
+			log.Print("Could not populate DB schema. Exiting ...", errPopul)
+			os.Exit(1)
+		}
 	}
 
 	// Routes

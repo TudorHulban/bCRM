@@ -1,8 +1,10 @@
 package main
 
 import (
+	"math/rand"
 	"time"
 
+	"github.com/TudorHulban/bCRM/pkg/commons"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -20,5 +22,15 @@ func createJWT(ttlSeconds int) (string, error) {
 	claims["admin"] = true
 	claims["exp"] = time.Now().Add(time.Second * time.Duration(ttlSeconds)).Unix()
 
-	return token.SignedString([]byte("secret"))
+	return token.SignedString([]byte(commons.TokenSecret))
+}
+
+func randomString(length int) string {
+	letterBytes := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(result)
 }
